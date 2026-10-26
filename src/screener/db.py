@@ -147,6 +147,10 @@ def ensure_roles(admin_url: str, db_name: str, rw_password: str | None, ro_passw
         conn.execute(sql.SQL("REVOKE CONNECT ON DATABASE {} FROM PUBLIC").format(db))
         conn.execute(sql.SQL("GRANT CONNECT ON DATABASE {} TO pipeline_rw, web_ro").format(db))
         conn.execute("REVOKE ALL ON SCHEMA public FROM PUBLIC")
+        if not conn.execute("SELECT rolsuper FROM pg_roles WHERE rolname = current_user").fetchone()[0]:
+            # Managed Postgres (e.g. Neon on Vercel): the owner can create roles but must be a member of
+            # pipeline_rw to hand it the schema.
+            conn.execute("GRANT pipeline_rw TO CURRENT_USER")
         conn.execute("ALTER SCHEMA public OWNER TO pipeline_rw")
         conn.execute("GRANT USAGE ON SCHEMA public TO web_ro")
         done.append("extensions vector + pg_trgm, schema ownership and CONNECT grants ensured")
