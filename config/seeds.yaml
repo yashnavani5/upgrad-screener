@@ -18,61 +18,65 @@ positives:
 - company: SpeakX
   website: https://speakx.ai/
   source_url: https://india.entrepreneur.com/news-and-trends/speakxai-raises-usd-16-mn-to-strengthen-ai-powered-english/498354
-  reason: "Analyst shortlist (Oct 2026): suggested acquire fit; reviewer positive (facts verified by the pipeline)"
+  reason: 'Analyst shortlist (Oct 2026): suggested acquire fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: Disprz
   website: https://disprz.com/
   source_url: https://www.peoplematters.in/news/funding-investment/disprz-raises-30-million-in-series-c-funding-38639
-  reason: "Analyst shortlist (Oct 2026): suggested acquire fit; reviewer positive (facts verified by the pipeline)"
+  reason: 'Analyst shortlist (Oct 2026): suggested acquire fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: iMocha
   website: https://imocha.io/
-  source_url: https://www.peoplematters.in/news/hr-technology/digital-skills-assessment-startup-imocha-raises-14-million-in-series-a-funding-32426
-  reason: "Analyst shortlist (Oct 2026): suggested acquire fit; reviewer positive (facts verified by the pipeline)"
+  source_url: 
+    https://www.peoplematters.in/news/hr-technology/digital-skills-assessment-startup-imocha-raises-14-million-in-series-a-funding-32426
+  reason: 'Analyst shortlist (Oct 2026): suggested acquire fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: GyanDhan
   website: https://gyandhan.com/
   source_url: https://entrackr.com/snippets/gyandhan-raises-rs-50-cr-in-series-a-round-from-classplus-and-pravega-9333649
-  reason: "Analyst shortlist (Oct 2026): suggested partner fit; reviewer positive (facts verified by the pipeline)"
+  reason: 'Analyst shortlist (Oct 2026): suggested partner fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: Propelld
   website: https://propelld.com/
-  source_url: https://www.business-standard.com/amp/article/companies/fintech-platform-propelld-raises-35-mn-to-boost-education-finance-biz-122021800376_1.html
-  reason: "Analyst shortlist (Oct 2026): suggested partner fit; reviewer positive (facts verified by the pipeline)"
+  source_url: 
+    https://www.business-standard.com/amp/article/companies/fintech-platform-propelld-raises-35-mn-to-boost-education-finance-biz-122021800376_1.html
+  reason: 'Analyst shortlist (Oct 2026): suggested partner fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: Seekho
   website: https://seekho.in/
   source_url: https://entrackr.com/news/seekho-raises-28-mn-in-series-b-round-led-by-bessemer-9780217
-  reason: "Analyst shortlist (Oct 2026): suggested partner fit; reviewer positive (facts verified by the pipeline)"
+  reason: 'Analyst shortlist (Oct 2026): suggested partner fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: Emversity
   website: https://emversity.com/
   source_url: https://india.entrepreneur.com/news-and-trends/emversity-raises-usd-30-mn-in-series-a-funding-led-by/501905
-  reason: "Analyst shortlist (Oct 2026): suggested partner fit; reviewer positive (facts verified by the pipeline)"
+  reason: 'Analyst shortlist (Oct 2026): suggested partner fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: SigIQ.ai
   website: https://sigiq.ai/
   source_url: https://india.entrepreneur.com/news-and-trends/sigiqai-raises-usd-95-mn-funding-co-led-by-the-house-fund/489673
-  reason: "Analyst shortlist (Oct 2026): suggested co-build fit; reviewer positive (facts verified by the pipeline)"
+  reason: 'Analyst shortlist (Oct 2026): suggested co-build fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: Mesa School of Business
   website: https://mesaschool.co/
   source_url: https://yourstory.com/2026/10/mesa-school-of-business-raises-rs-110-crore-co-led-dharana-capital-elevation-capital
-  reason: "Analyst shortlist (Oct 2026): suggested co-build fit; reviewer positive (facts verified by the pipeline)"
+  reason: 'Analyst shortlist (Oct 2026): suggested co-build fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: ProLearn
-  website: null
+  website:
   source_url: https://india.entrepreneur.com/business-news/prolearn-raises-inr-30-cr-pre-seed-round-led-by-beenext
-  reason: "Analyst shortlist (Oct 2026): suggested co-build fit; reviewer positive (facts verified by the pipeline)"
+  reason: 'Analyst shortlist (Oct 2026): suggested co-build fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: Arivihan
   website: https://arivihan.com/
-  source_url: https://timesofindia.indiatimes.com/business/india-business/ai-edtech-startup-arivihan-raises-10-mn-from-accel-prosus/articleshow/134592347.cms
-  reason: "Analyst shortlist (Oct 2026): suggested co-build fit; reviewer positive (facts verified by the pipeline)"
+  source_url: 
+    https://timesofindia.indiatimes.com/business/india-business/ai-edtech-startup-arivihan-raises-10-mn-from-accel-prosus/articleshow/134592347.cms
+  reason: 'Analyst shortlist (Oct 2026): suggested co-build fit; reviewer positive (facts verified by the pipeline)'
   origin: reviewer
 - company: byteXL
   website: https://www.bytexl.com/
-  source_url: https://entrackr.com/snippets/edtech-startup-bytexl-raises-9-mn-in-funding-round-led-by-elevar-equity-12632385
+  source_url: 
+    https://economictimes.indiatimes.com/tech/funding/edtech-firm-bytexl-raises-9-million-in-series-b-round-led-by-elevar-equity/articleshow/134757491.cms
   reason: India, passes all hard gates, gap-map fit (employability_placement, hiring_recruitment), listed top investor
   origin: auto
 - company: Nprep
@@ -83,8 +87,7 @@ positives:
   origin: auto
 - company: YoLearn.ai
   website: https://yolearn.ai/
-  source_url: 
-    https://www.indianstartuptimes.com/investment/yolearn-ai-raises-500k-pre-seed-funding-to-expand-voice-first-ai-tutoring-platform/
+  source_url: https://www.yolearn.ai/
   reason: India, passes all hard gates, gap-map fit (ai_tutoring, test_prep), 1 corroborated round(s) in the window
   origin: auto
 negatives:
@@ -98,15 +101,15 @@ negatives:
   source_url: https://leapscholar.com/about-us
   reason: 'TOO_LARGE: Raised $150,000,000 (corroborated funding rounds), above the $100,000,000 ceiling.'
   origin: auto
-- company: Adda247
-  website: https://www.adda247.com/
-  source_url: https://www.adda247.com/careers.html
-  reason: 'TOO_LARGE: Headcount 2,000 exceeds the 1,000 ceiling.'
-  origin: auto
 - company: Teachmint
   website: https://www.teachmint.com/
   source_url: https://multiples.vc/private-comps/teachmint
   reason: 'TOO_LARGE: Raised $114,500,000 (corroborated funding rounds), above the $100,000,000 ceiling.'
+  origin: auto
+- company: Adda247
+  website: https://www.adda247.com/
+  source_url: https://www.adda247.com/careers.html
+  reason: 'TOO_LARGE: Headcount 2,000 exceeds the 1,000 ceiling.'
   origin: auto
 - company: Porter
   website: https://porter.in/
@@ -134,15 +137,15 @@ negatives:
   source_url: https://unacademy.com/
   reason: 'COMPETITOR: Unacademy is on the competitors-at-scale list.'
   origin: auto
-- company: Preply
-  website: https://preply.com/
-  source_url: https://techukraine.org/2026/01/23/new-ukrainian-unicorn-preply-raises-150m-series-d-hits-1-2b-valuation/
-  reason: 'TOO_LARGE: Raised $150,000,000 (corroborated funding rounds), above the $100,000,000 ceiling.'
-  origin: auto
 - company: Ti
   website: https://www.ti.com/
   source_url: https://careers.ti.com/en/sites/CX
   reason: 'TOO_LARGE: Headcount 33,000 exceeds the 1,000 ceiling.'
+  origin: auto
+- company: Preply
+  website: https://preply.com/
+  source_url: https://techukraine.org/2026/01/23/new-ukrainian-unicorn-preply-raises-150m-series-d-hits-1-2b-valuation/
+  reason: 'TOO_LARGE: Raised $150,000,000 (corroborated funding rounds), above the $100,000,000 ceiling.'
   origin: auto
 - company: Class
   website: https://www.class.com/
