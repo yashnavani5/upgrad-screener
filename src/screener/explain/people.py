@@ -40,7 +40,7 @@ FOUNDER_SYSTEM = (
     "Write THREE short lines about a founder for upGrad's partnerships / M&A / co-build team, using ONLY the "
     "numbered verified claims (current role, prior companies and roles, exits, education). Each line is a list of "
     "segments and every segment cites claim ids (like C2). No adjectives, numbers or facts the cited claims do not "
-    "state. No em dashes. "
+    "state. No em dashes. Refer to the founder by name; never use he, she, his, her or him. "
     "line (<= 25 words): who the founder is. "
     "why (<= 25 words): why this founder made the cut: their verified track record (exits, companies built or "
     "scaled, senior roles, education). "
@@ -163,6 +163,15 @@ def founder_template(name: str, refs: dict[str, ClaimRef], labels: list[str] | N
                           sorted(set(intro_ids + track_ids + fit_ids)), "template", 0)
 
 
+PRONOUNS = {"he": "{n}", "she": "{n}", "him": "{n}", "his": "{n}'s", "her": "{n}'s", "hers": "{n}'s"}
+_PRONOUN = re.compile(r"\b(he|she|him|his|her|hers)\b", re.IGNORECASE)
+
+
+def depronoun(text: str, name: str) -> str:
+    """Founder lines name the founder instead of guessing a gender: he/she/his/her -> the name. Pure."""
+    return _PRONOUN.sub(lambda m: PRONOUNS[m.group(1).lower()].format(n=name), text) if text else text
+
+
 def check_founder(out: FounderLines, refs: dict[str, ClaimRef], labels: list[str]) -> list[str]:
     errors = []
     for part in ("line", "why", "fit"):
@@ -192,7 +201,8 @@ async def founder_lines(gemini: Any, name: str, company: str, claims: list[Any],
         if not errors:
             segs = out.line + out.why + out.fit
             ids = sorted({refs[i.strip().upper()].claim_id for s in segs for i in s.claim_ids if i.strip().upper() in refs})
-            return FounderWritten(join(out.line), join(out.why), join(out.fit), ids, "llm", attempt)
+            return FounderWritten(depronoun(join(out.line), name), depronoun(join(out.why), name),
+                                  depronoun(join(out.fit), name), ids, "llm", attempt)
     log.info("founder lines fell back to template for %s: %s", name, errors)
     w = founder_template(name, refs, labels)
     w.attempts = MAX_ATTEMPTS

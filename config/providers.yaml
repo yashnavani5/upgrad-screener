@@ -54,7 +54,7 @@ budget:
   # cap would be exceeded. Daily/monthly caps are shared by every process (run, worker, enrich, ai-triage,
   # dashboard rescores) via provider_quota; days and months are UTC. RUN_BUDGET_USD (.env) caps one process.
   # null = no cap at that level. The dashboard's "Ask" box (web/) calls Gemini directly and is not counted.
-  gemini_daily_usd_limit: 8.0          # raised from 5.0 on 2026-10-26 to finish the reviewer picks
+  gemini_daily_usd_limit: 10.0         # PERMANENT (user, 2026-10-27): fixed at $10/day; do not change
   gemini_monthly_usd_limit: 40.0
   # Budget guard (screener run): stages are sized so the run stops gracefully BEFORE a limit is exceeded.
   # Limits: RUN_MAX_LLM_CALLS per run (.env), the USD caps above and, optionally, a daily Gemini request cap.

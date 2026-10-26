@@ -374,3 +374,11 @@ def test_shortlist_column_change_keeps_reviewer_entries_with_their_row() -> None
     assert new[0] == SHORTLIST
     assert pub.reviewer_values("Shortlist")[eid] == {"Reviewer label": "👍", "Reviewer note": "call them"}
     assert any("setDataValidation" in r for r in sh.requests)                 # dropdown re-applied on the new layout
+
+
+def test_founder_lines_use_the_name_not_a_guessed_pronoun() -> None:
+    from screener.explain.people import depronoun
+
+    assert depronoun("He studied at IIT Kanpur.", "Asha Rao") == "Asha Rao studied at IIT Kanpur."
+    assert depronoun("Her experience fits Test prep.", "Asha Rao") == "Asha Rao's experience fits Test prep."
+    assert depronoun("The Hershey shell company", "Asha Rao") == "The Hershey shell company"  # whole words only
