@@ -18,6 +18,8 @@ export type Field = ("prior_role" | "prior_exit" | "education")
 export type SourceUrl = string
 export type Background = FounderFact[]
 export type Line = (string | null)
+export type Why = (string | null)
+export type Fit = (string | null)
 export type Founders = FounderProfile[]
 export type FitType = string
 export type Final = number
@@ -82,6 +84,8 @@ identity_verified?: IdentityVerified
 x_url?: XUrl
 background?: Background
 line?: Line
+why?: Why
+fit?: Fit
 }
 /**
  * A supported founder claim shown as background: prior_role, prior_exit or education.

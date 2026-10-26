@@ -11,6 +11,7 @@ import type { Shortlist } from "@/lib/schemas";
 import { SCORE_INFO } from "@/lib/score-labels";
 
 import { ExportButton } from "./export-button";
+import { founderText } from "./founders";
 import { ShortlistCard } from "./shortlist-card";
 import { EmptyState, EvidenceLink, FitBadge, RegionBadge } from "./ui";
 
@@ -80,11 +81,11 @@ export function ShortlistView({ rows, run, region = "global" }: { rows: Shortlis
         </ol>
       ) : (
         <div className="card overflow-x-auto" data-testid="shortlist-table">
-          <table className="w-full min-w-[960px]">
+          <table className="w-full min-w-[1400px]">
             <thead className="bg-surface-alt"><tr>
               {["#", "Company", "Founder(s)", "Fit", "Region"].map((h) => <th key={h} className="th">{h}</th>)}
               {(["final", "t", "i", "f", "c"] as const).map((k) => <th key={k} className="th" title={SCORE_INFO[k].hint}>{SCORE_INFO[k].name}</th>)}
-              {["Why they made the cut", "Evidence"].map((h) => <th key={h} className="th">{h}</th>)}
+              {["Why they made the cut", "Founders: why they made the cut", "Founders: how they fit upGrad", "Evidence"].map((h) => <th key={h} className="th">{h}</th>)}
             </tr></thead>
             <tbody>
               {shown.map((r) => (
@@ -96,6 +97,14 @@ export function ShortlistView({ rows, run, region = "global" }: { rows: Shortlis
                   <td className="td"><RegionBadge region={r.region} basis={r.region_basis} /></td>
                   {[r.final, r.t, r.i, r.f, r.confidence].map((v, i) => <td key={i} className="td tabular">{score(v, i === 0 ? 3 : 2)}</td>)}
                   <td className="td text-ink-muted max-w-sm">{clean(r.why_line)}</td>
+                  {(["why", "fit"] as const).map((k) => (
+                    <td key={k} className="td text-ink-muted max-w-sm">
+                      {r.founders.filter((f) => f[k]).map((f) => (
+                        <p key={f.name} className="mb-1"><span className="font-medium text-ink">{f.name}:</span> {founderText(f.name, f[k])}</p>
+                      ))}
+                      {!r.founders.some((f) => f[k]) && "-"}
+                    </td>
+                  ))}
                   <td className="td"><div className="flex flex-col gap-1">{r.evidence.slice(0, 3).map((e) => <EvidenceLink key={e.url} url={e.url}>{e.domain}</EvidenceLink>)}</div></td>
                 </tr>
               ))}

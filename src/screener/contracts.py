@@ -72,6 +72,8 @@ class FounderProfile(FounderRef):
     x_url: str | None = None          # X profile found via search snippets (never fetched); never verifies alone
     background: list[FounderFact] = []
     line: str | None = None           # one-line bio written from the founder's verified claims (explain stage)
+    why: str | None = None            # why the founder made the cut: verified track record (explain stage)
+    fit: str | None = None            # how the founder's background fits upGrad (explain stage)
 
 
 class FounderDetail(ContractModel):

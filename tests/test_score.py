@@ -373,6 +373,18 @@ def test_lookup_needs_only_missing_and_not_yet_done() -> None:
     assert needs(known, 2) == ([], [], [])
 
 
+def test_lookup_background_v2_reruns_once_for_thin_founders() -> None:
+    thin = SimpleNamespace(founder=SimpleNamespace(lookups={"background": "2026-10-25"}), claims=[gclaim("education", {})])
+    rich = SimpleNamespace(founder=SimpleNamespace(lookups={"background": "2026-10-25"}),
+                           claims=[gclaim("prior_role", {}), gclaim("education", {})])
+    done = SimpleNamespace(founder=SimpleNamespace(lookups={"background": "2026-10-25", "background_v2": "2026-10-27"}), claims=[])
+    cd = SimpleNamespace(company=SimpleNamespace(lookups={"size": "x", "location": "x", "x": "x"}), size_known=True,
+                         geo="india", founders=[thin, rich, done])
+    _, founders, _ = needs(cd, 3, background_version=2, min_background=2)
+    assert founders == [thin.founder]                     # rich has 2 facts; done already ran v2
+    assert needs(cd, 3)[1] == []                           # v1 rules: all three already looked up once
+
+
 def test_acquired_company_is_excluded() -> None:
     acq = SimpleNamespace(field="acquired", value_json={"acquirer": "Top Hat", "date": "2022-12"}, verified_status="supported",
                           entity_type="company", source_url="https://x.example", meta={}, id="acq")

@@ -10,8 +10,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from screener.explain.people import Candidate as CuratedCandidate
-from screener.explain.people import curated_line, founder_line, pick_curated
-from screener.explain.writer import pick_evidence, write
+from screener.explain.people import curated_line, founder_lines, pick_curated
+from screener.explain.writer import fit_labels, pick_evidence, write
 from screener.policy import category_labels
 from screener.models import Candidate, Claim, Company, CompanyFounder, Exclusion, Founder, Run, Score
 from screener.score.features import usable
@@ -58,11 +58,12 @@ async def explain_run(session: Session, cfg: Any, gemini: Any, run: Run | None =
         score.evidence = pick_evidence(claims, set(w.why_ids) | set(w.fit_ids), company.domain, vconf)
         # One line per founder (top 2 by verified background), from that founder's verified claims only.
         ranked = sorted(founders, key=lambda f: -sum(1 for c in claims if c.entity_id == f.id))[:2]
+        labels = fit_labels([c for c in claims if c.entity_type == "company"], cfg.gap_map)
         lines = {}
         for f in ranked:
             async with sem:
-                fl = await founder_line(gemini, f.full_name, company.name, [c for c in claims if c.entity_id == f.id])
-            lines[str(f.id)] = {"line": fl.line, "claim_ids": fl.claim_ids, "method": fl.method}
+                fl = await founder_lines(gemini, f.full_name, company.name, [c for c in claims if c.entity_id == f.id], labels)
+            lines[str(f.id)] = {"line": fl.line, "why": fl.why, "fit": fl.fit, "claim_ids": fl.claim_ids, "method": fl.method}
             report.founder_lines += 1
         score.features = {**(score.features or {}), "founder_lines": lines, "explanation": {
             "why_claim_ids": w.why_ids, "fit_claim_ids": w.fit_ids, "method": w.method, "attempts": w.attempts,

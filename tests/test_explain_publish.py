@@ -10,6 +10,7 @@ from types import SimpleNamespace
 import pytest
 
 from screener.config import load_yaml
+from screener.explain.people import FounderLines, check_founder, founder_lines, founder_template
 from screener.explain.writer import Explanation, Segment, build_refs, pick_evidence, template, validate, write
 from screener.publish.sheets import LONG_LIST, SHORTLIST, SheetPublisher, col_letter, with_retry
 
@@ -134,15 +135,21 @@ class FakeSpreadsheet:
 
     def __init__(self, fail_first=0):
         self.tabs, self.requests, self.value_calls, self.fail_first = {}, [], 0, fail_first
+        self.deleted = []
 
     def worksheet(self, name):
         if name not in self.tabs:
             raise WorksheetNotFound(name)
         return self.tabs[name]
 
-    def add_worksheet(self, title, rows, cols):
-        self.tabs[title] = FakeWorksheet(title, len(self.tabs) + 1, rows)
+    def add_worksheet(self, title, rows, cols, index=None):
+        self.tabs[title] = FakeWorksheet(title, len(self.tabs) + 1 + len(self.deleted), rows)
+        self.tabs[title].index = index
         return self.tabs[title]
+
+    def del_worksheet(self, ws):
+        self.deleted.append(ws.title)
+        del self.tabs[ws.title]
 
     def values_batch_update(self, body):
         if self.fail_first:
@@ -292,3 +299,78 @@ def test_curated_left_out_one_per_category_india_first_never_upgrad() -> None:
             Candidate("near", "LOW_FIT", 20, "india"), Candidate("dup", "DUPLICATE_THESIS", 16, "outside")]
     picks = {cat: c.key for cat, c in pick_curated(rows)}
     assert picks == {"big": "big-in", "evidence": "thin", "close": "near"}  # India first within each category
+
+
+# --- founder why / fit lines and the Sheet column change ------------------------------------------------------
+
+FO = uuid.uuid4()
+
+
+def fclaim(field, value):
+    c = claim(field, value, "https://yourstory.com/f", entity=FO)
+    c.entity_type = "founder"
+    return c
+
+
+FCLAIMS = [fclaim("current_role", {"role": "CEO", "company": "Acme Learning"}),
+           fclaim("prior_role", {"role": "VP Product", "company": "Byju's"}),
+           fclaim("education", {"institution": "IIT Bombay"})]
+LABELS = ["AI tutoring & personalization", "Test prep"]
+
+
+def frefs():
+    return build_refs(FCLAIMS, {FO: "Asha Rao"})
+
+
+def test_founder_fit_must_name_an_upgrad_label_and_cite() -> None:
+    ok = FounderLines(line=[Segment(text="CEO of Acme Learning", claim_ids=["C1"])],
+                      why=[Segment(text="Previously VP Product at Byju's", claim_ids=["C2"])],
+                      fit=[Segment(text="Product experience at Byju's suits AI tutoring & personalization", claim_ids=["C2"])])
+    assert check_founder(ok, frefs(), LABELS) == []
+    no_label = ok.model_copy(update={"fit": [Segment(text="Strong operator", claim_ids=["C2"])]})
+    assert any(e.startswith("fit: must name") for e in check_founder(no_label, frefs(), LABELS))
+    uncited = ok.model_copy(update={"why": [Segment(text="Built a big company", claim_ids=["C9"])]})
+    assert any(e.startswith("why:") for e in check_founder(uncited, frefs(), LABELS))
+
+
+def test_founder_template_uses_verified_claims_only() -> None:
+    w = founder_template("Asha Rao", frefs(), LABELS)
+    assert w.method == "template"
+    assert "Byju's" in w.why and "CEO" not in w.why          # track record excludes the current role
+    assert "AI tutoring & personalization" in w.fit and "Byju's" in w.fit
+    empty = founder_template("Ravi", {}, LABELS)
+    assert "no verified" in empty.why and "no verified" in empty.fit
+
+
+def test_founder_lines_retries_then_accepts() -> None:
+    bad = FounderLines(line=[Segment(text="CEO of Acme Learning", claim_ids=["C1"])],
+                       why=[Segment(text="Previously VP Product at Byju's", claim_ids=["C2"])],
+                       fit=[Segment(text="Great hire", claim_ids=["C2"])])
+    good = bad.model_copy(update={"fit": [Segment(text="Byju's product work fits Test prep", claim_ids=["C2"])]})
+    answers = iter([bad, good])
+
+    class G:
+        async def generate_json(self, prompt, schema, model, system=None):
+            return next(answers)
+
+    w = asyncio.run(founder_lines(G(), "Asha Rao", "Acme Learning", FCLAIMS, LABELS))
+    assert (w.method, w.attempts) == ("llm", 2) and w.fit == "Byju's product work fits Test prep."
+
+
+def test_shortlist_column_change_keeps_reviewer_entries_with_their_row() -> None:
+    sh = FakeSpreadsheet()
+    old = [h for h in SHORTLIST if not h.startswith("Founders:")]
+    ws = sh.add_worksheet("Shortlist", 1000, len(old), index=0)
+    eid = str(uuid.uuid4())
+    row = {h: "" for h in old} | {"Rank": "1", "Company": "Acme", "Reviewer label": "👍", "Reviewer note": "call them",
+                                  "entity_id": eid}
+    for j, h in enumerate(old, start=1):
+        ws.grid[(1, j)] = h
+        ws.grid[(2, j)] = row[h]
+    pub = SheetPublisher(sh, sleep=lambda s: None)
+    pub.tab("Shortlist")
+    assert sh.deleted == ["Shortlist"] and sh.tabs["Shortlist"].index == 0   # rebuilt at the same position
+    new = sh.tabs["Shortlist"].get_all_values()
+    assert new[0] == SHORTLIST
+    assert pub.reviewer_values("Shortlist")[eid] == {"Reviewer label": "👍", "Reviewer note": "call them"}
+    assert any("setDataValidation" in r for r in sh.requests)                 # dropdown re-applied on the new layout

@@ -27,6 +27,7 @@ export const founderFact = z.object({
 const profileFields = {
   title: z.string().nullable().optional(), identity_verified: z.boolean().default(false),
   x_url: z.string().nullable().optional(), background: z.array(founderFact).default([]), line: z.string().nullable().optional(),
+  why: z.string().nullable().optional(), fit: z.string().nullable().optional(),
 };
 export const founderProfile = founderRef.extend({ founder_id: z.string().nullable().optional(), ...profileFields });
 export const evidenceRef = z.object({ url: z.string(), title: z.string().nullable().optional(), domain: z.string() }).loose();

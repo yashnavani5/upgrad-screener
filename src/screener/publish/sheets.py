@@ -17,7 +17,7 @@ from typing import Any
 log = logging.getLogger(__name__)
 
 SHORTLIST = ["Rank", "Founder(s)", "Company", "Website", "Fit type", "Final", "T", "I", "F", "Confidence",
-             "Why they made the cut", "How they fit upGrad", "Evidence 1", "Evidence 2", "Evidence 3", "LinkedIn URL",
+             "Why they made the cut", "How they fit upGrad", "Founders: why they made the cut", "Founders: how they fit upGrad", "Evidence 1", "Evidence 2", "Evidence 3", "LinkedIn URL",
              "Last verified", "Reviewer label", "Reviewer note", "entity_id", "prev_rank"]
 LEFT_OUT = ["Company", "Founder(s)", "Reason code", "Explanation", "Would have ranked", "Source", "entity_id"]
 LONG_LIST = ["Rank", "Company", "Founder(s)", "Website", "Fit type", "Final", "T", "I", "F", "M", "N", "Confidence",
@@ -50,6 +50,7 @@ TAB_ORDER = ["Shortlist", "Left out", "Long list", "Claims", "Run log"]
 WIDTHS = {
     "Rank": 56, "Company": 170, "Founder(s)": 210, "Website": 200, "Fit type": 96, "Final": 70, "T": 56, "I": 56,
     "F": 56, "M": 56, "N": 56, "Confidence": 92, "Why they made the cut": 380, "How they fit upGrad": 380,
+    "Founders: why they made the cut": 380, "Founders: how they fit upGrad": 380,
     "Evidence 1": 220, "Evidence 2": 220, "Evidence 3": 220, "LinkedIn URL": 220, "Last verified": 110,
     "Reviewer label": 110, "Reviewer note": 240, "Reason code": 150, "Explanation": 460, "Would have ranked": 96,
     "Source": 240, "Gate": 80, "Subject": 170, "Field": 150, "Value": 300, "Status": 100, "Verifier confidence": 96,
@@ -57,7 +58,7 @@ WIDTHS = {
     "Finished": 150, "Candidates": 96, "Companies": 96, "Verified claims": 110, "Shortlisted": 96,
     "Provider quota used": 260, "Cost (USD)": 90,
 }
-WRAP = {"Founder(s)", "Why they made the cut", "How they fit upGrad", "Reviewer note", "Explanation", "Value",
+WRAP = {"Founder(s)", "Why they made the cut", "How they fit upGrad", "Founders: why they made the cut", "Founders: how they fit upGrad", "Reviewer note", "Explanation", "Value",
         "Evidence span", "Provider quota used", "Company"}
 CLIP = {"Website", "Evidence 1", "Evidence 2", "Evidence 3", "LinkedIn URL", "Source", "Source URL"}
 NUMBER_FORMATS = {"Final": "0.000", "T": "0.00", "I": "0.00", "F": "0.00", "M": "0.00", "N": "0.00",
@@ -76,6 +77,8 @@ NOTES = {  # header notes: hover a header in the Sheet to read what the column m
     "Confidence": "Share of the expected facts that were verified against a source (0 to 1).",
     "Why they made the cut": "One line from verified claims only; every fact has a source in the Claims tab.",
     "How they fit upGrad": "One line on the fit, from verified claims only.",
+    "Founders: why they made the cut": "Per founder (top 2): their verified track record, from verified claims only.",
+    "Founders: how they fit upGrad": "Per founder (top 2): how their background fits an upGrad business unit or wanted capability.",
     "Evidence 1": EVIDENCE_NOTE, "Evidence 2": EVIDENCE_NOTE, "Evidence 3": EVIDENCE_NOTE,
     "Last verified": "When the claims were last re-checked against their sources.",
     "Reviewer label": "For the upGrad team: pick a label. Never overwritten by the pipeline.",
@@ -157,7 +160,21 @@ class SheetPublisher:
             ws = with_retry(lambda: self.sh.add_worksheet(title=name, rows=1000, cols=len(headers)), sleep=self.sleep)
             created = True
         rows = with_retry(lambda: ws.get_all_values(), sleep=self.sleep) or []
-        if not rows or rows[0][: len(headers)] != headers:
+        if rows and any(rows[0]) and rows[0][: len(headers)] != headers and not created:
+            # Columns changed (added/moved): rebuild the tab at the same position so hidden columns, dropdowns and
+            # conditional formats match the new layout; carry existing values over by column name, so a reviewer's
+            # label/note stays with its row instead of shifting into another column.
+            old = {h: i for i, h in enumerate(rows[0]) if h}
+            carried = [[r[old[h]] if h in old and old[h] < len(r) else "" for h in headers] for r in rows[1:]]
+            index = getattr(ws, "index", None)
+            size = max(1000, len(rows) + 500)
+            with_retry(lambda: self.sh.del_worksheet(ws), sleep=self.sleep)
+            ws = with_retry(lambda: self.sh.add_worksheet(title=name, rows=size, cols=len(headers), index=index),
+                            sleep=self.sleep)
+            created = True
+            rows = [headers] + carried
+            self._values(name, [(f"A1:{col_letter(len(headers))}{len(rows)}", rows)])
+        elif not rows or rows[0][: len(headers)] != headers:
             self._values(name, [(f"A1:{col_letter(len(headers))}1", [headers])])
             rows = [headers] + rows[1:] if rows else [headers]
         if created:

@@ -74,15 +74,24 @@ def lookup_targets(session: Session, cfg: Any, top_n: int, ranked_fallback: list
     return list(rows) or ranked_fallback[:top_n]
 
 
-def needs(cd: Any, founders_per_company: int) -> tuple[list[str], list[Founder], list[Founder]]:
+def background_key(version: int) -> str:
+    """founders.lookups key of a background lookup version (v1 kept its original name)."""
+    return "background" if version <= 1 else f"background_v{version}"
+
+
+def needs(cd: Any, founders_per_company: int, background_version: int = 1,
+          min_background: int = 1) -> tuple[list[str], list[Founder], list[Founder]]:
     """(company lookups still needed, founders needing a background lookup, founders needing an X lookup).
-    Pure on CompanyData. The company X lookup (posts about funding/launches/hiring) runs once per company."""
+    Pure on CompanyData. The company X lookup (posts about funding/launches/hiring) runs once per company.
+    A founder gets a background lookup once per `background_version` while they have fewer than
+    `min_background` verified background facts (prior roles, exits, education); a version is never paid twice."""
     done = cd.company.lookups or {}
     todo = [k for k, missing in (("size", not cd.size_known), ("location", cd.geo == "unknown"), ("x", True))
             if missing and k not in done]
     top = cd.founders[:founders_per_company]
-    background = [fd.founder for fd in top if "background" not in (fd.founder.lookups or {})
-                  and not any(c.field in BACKGROUND_FIELDS for c in fd.claims)]
+    key = background_key(background_version)
+    background = [fd.founder for fd in top if key not in (fd.founder.lookups or {})
+                  and sum(1 for c in fd.claims if c.field in BACKGROUND_FIELDS) < min_background]
     x = [fd.founder for fd in top if "x" not in (fd.founder.lookups or {})]
     return todo, background, x
 
@@ -179,11 +188,13 @@ class Lookups:
         report = LookupReport()
         done = 0
         n_founders = int(self.conf.get("founders_per_company", 2))
+        bg_version = int(self.conf.get("founder_background_version", 1))
+        bg_min = int(self.conf.get("founder_background_min_facts", 1))
         sem = asyncio.Semaphore(int(self.e.limits["concurrency"]))
         step_timeout = float(self.e.limits.get("step_timeout_seconds", 180))
 
         async def one(cd: Any) -> None:
-            todo, founders, x_founders = needs(cd, n_founders)
+            todo, founders, x_founders = needs(cd, n_founders, bg_version, bg_min)
             if not todo and not founders and not x_founders:
                 return
             handles: dict[str, str] = {}
@@ -221,7 +232,7 @@ class Lookups:
                     for f in founders:
                         if f"founder:{f.id}" in finished:
                             row = s.get(Founder, f.id)
-                            row.lookups = {**(row.lookups or {}), "background": today}
+                            row.lookups = {**(row.lookups or {}), "background": today, background_key(bg_version): today}
                             flag_modified(row, "lookups")
                     for f in x_founders:
                         if f"x:{f.id}" in finished:

@@ -972,6 +972,64 @@ def audit_sample(n: int = typer.Option(30, "--n"), seed: int = typer.Option(7, "
     console.print(f"[green]OK[/green] {len(rows)} claims across {len({r['field'] for r in rows})} fields -> {out}")
 
 
+@founders_app.command("deepen")
+def founders_deepen(
+    verify_now: bool = typer.Option(True, "--verify/--no-verify", help="Verify the new founder facts right away."),
+) -> None:
+    """Deeper founder background lookup for the latest shortlist (founders with thin verified backgrounds only),
+    then verification. Follow with `screener explain` and `screener publish` to refresh the founder lines."""
+    from sqlalchemy import select
+    from sqlalchemy.orm import Session, sessionmaker
+
+    from screener.db import get_engine
+    from screener.enrich.lookups import Lookups
+    from screener.enrich.service import Enricher
+    from screener.explain.service import latest_run
+    from screener.http import Fetcher
+    from screener.models import Candidate, Company, Score
+    from screener.policy import effective_config
+    from screener.score.features import load
+    from screener.search import SearchRouter
+    from screener.verify.service import Verifier
+
+    engine = get_engine()
+    with Session(engine, expire_on_commit=False) as s:
+        cfg = effective_config(s, get_config())
+        run = latest_run(s)
+        if run is None:
+            raise typer.BadParameter("no scored run yet")
+        companies = list(s.scalars(select(Company).join(Candidate, Candidate.company_id == Company.id)
+                                   .join(Score, Score.candidate_id == Candidate.id)
+                                   .where(Score.run_id == run.id, Score.shortlist_rank.is_not(None))))
+        cds = load(s, cfg, companies)
+    factory = sessionmaker(engine, expire_on_commit=False)
+
+    async def go() -> Any:
+        quota = _quota_store()
+        gemini = _gemini()
+        if gemini is None:
+            raise typer.BadParameter("founder lookups need Gemini: set GEMINI_API_KEY and GEMINI_MODEL_FAST")
+        async with httpx.AsyncClient(headers={"User-Agent": cfg.settings.user_agent}, timeout=20.0) as client, Fetcher(cfg) as fetcher:
+            router = SearchRouter.from_config(cfg, client=client, quota=quota, gemini=gemini)
+            try:
+                enricher = Enricher(cfg, fetcher=fetcher, router=router, gemini=gemini, quota=quota)
+                lr = await Lookups(enricher).run(factory, cds)
+                vr = None
+                if verify_now:
+                    with Session(engine, expire_on_commit=False) as s:
+                        vr = await Verifier(cfg, fetcher=fetcher, gemini=gemini).run(s, [s.get(Company, c.id) for c in companies])
+                return lr, vr
+            finally:
+                await gemini.aclose()
+
+    lr, vr = asyncio.run(go())
+    console.print(f"shortlist of run {run.id}: {len(companies)} companies; founder background lookups {lr.founders}, "
+                  f"{lr.stored} new claims, {len(lr.errors)} errors")
+    if vr is not None:
+        console.print("verified: " + ", ".join(f"{k}={v}" for k, v in vr.by_status.most_common()))
+    console.print("next: uv run screener explain && uv run screener publish")
+
+
 @founders_app.command("dedupe")
 def founders_dedupe() -> None:
     """Merge duplicate founders of the same company (same name tokens in another order, or a contained name)."""

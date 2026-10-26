@@ -38,10 +38,17 @@ lookups:
   top_n: 80                  # companies considered (by the same ranking as enrich/verify targets)
   pages_per_query: 2         # pages fetched per query (snippet-only domains are never fetched)
   founders_per_company: 2
+  # Founder background (prior companies/roles, exits, education). Raising the version re-runs the lookup ONCE for
+  # founders who still have fewer than min_facts verified background facts (v2, 2026-10-27: founder "why they made
+  # the cut" / "how they fit upGrad" lines needed more track record). Earlier versions are never repeated.
+  founder_background_version: 2
+  founder_background_min_facts: 2
   queries:
     size: ['"{name}" total funding raised', '"{name}" employees']
     location: ['"{name}" headquartered', '"{name}" based in']
-    founder: ['"{founder}" "{name}"', '"{founder}" founder previously OR formerly OR ex']
+    founder: ['"{founder}" "{name}"', '"{founder}" founder previously OR formerly OR ex',
+              '"{founder}" "{name}" interview journey OR background OR career',
+              '"{founder}" co-founded OR "earlier founded" OR alumnus OR graduated']
     founder_x: ['"{founder}" x.com', 'site:x.com "{founder}" {name}']   # X bio via search snippet (never fetched); bio must name the company
     company_x: ['site:x.com "{name}" (raised OR funding OR launch OR hiring)']
 

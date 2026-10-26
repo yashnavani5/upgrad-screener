@@ -5,10 +5,16 @@ import { clean } from "@/lib/format";
 type Fact = { field: "prior_role" | "prior_exit" | "education"; value: Record<string, unknown>; source_url: string };
 export type FounderView = {
   name: string; role?: string | null; title?: string | null; linkedin_url?: string | null; x_url?: string | null;
-  identity_verified?: boolean; background?: Fact[]; line?: string | null;
+  identity_verified?: boolean; background?: Fact[]; line?: string | null; why?: string | null; fit?: string | null;
 };
 
 const ICON = { prior_role: Briefcase, prior_exit: Trophy, education: GraduationCap } as const;
+
+/** Code-built founder lines start with "Name: "; the founder's name is already shown above them. */
+export function founderText(name: string, text?: string | null): string {
+  const t = clean(text ?? "");
+  return t.startsWith(`${name}: `) ? t.slice(name.length + 2) : t;
+}
 
 function factText(f: Fact): string {
   const v = f.value as Record<string, string | number | null | undefined>;
@@ -51,7 +57,13 @@ export function FounderList({ founders, compact = false }: { founders: FounderVi
                 {f.x_url && <a className="link" href={f.x_url} target="_blank" rel="noopener noreferrer" data-testid="founder-x">X</a>}
               </span>
             </div>
-            {f.line && <p className="text-sm text-ink" data-testid="founder-line">{clean(f.line)}</p>}
+            {f.line && <p className="text-sm text-ink" data-testid="founder-line">{founderText(f.name, f.line)}</p>}
+            {(f.why || f.fit) && (
+              <dl className="grid gap-1 text-sm" data-testid="founder-why-fit">
+                {f.why && <div><dt className="inline font-medium">Why they made the cut: </dt><dd className="inline text-ink-muted">{founderText(f.name, f.why)}</dd></div>}
+                {f.fit && <div><dt className="inline font-medium">How they fit upGrad: </dt><dd className="inline text-ink-muted">{founderText(f.name, f.fit)}</dd></div>}
+              </dl>
+            )}
             {bg.length > 0 && (
               <ul className="flex flex-wrap gap-1.5" aria-label={`${f.name} verified background`}>
                 {bg.map((b) => {
@@ -67,7 +79,7 @@ export function FounderList({ founders, compact = false }: { founders: FounderVi
                 })}
               </ul>
             )}
-            {!f.line && !bg.length && <p className="text-xs text-ink-muted">No verified background beyond the founding role yet.</p>}
+            {!f.line && !f.why && !bg.length && <p className="text-xs text-ink-muted">No verified background beyond the founding role yet.</p>}
           </li>
         );
       })}

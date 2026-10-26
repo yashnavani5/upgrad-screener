@@ -81,11 +81,19 @@ def shortlist_records(session: Session, run: Run) -> list[dict[str, Any]]:
         ids = [c.id] + [f.id for f in founders]
         last = session.scalar(select(func.max(Claim.retrieved_at)).where(Claim.entity_id.in_(ids), Claim.verified_status == "supported"))
         ev = (s.evidence or []) + [{}] * 3
+        lines = (s.features or {}).get("founder_lines") or {}
+        by_id = {str(f.id): f.full_name for f in founders}
+        per_founder = [(by_id.get(fid, ""), fl) for fid, fl in lines.items() if fid in by_id]
+
+        def founder_col(key: str) -> str | None:
+            vals = [str(fl.get(key) or "").strip() for _, fl in per_founder if fl.get(key)]
+            return "\n".join(vals) or None
         out.append({
             "Rank": s.shortlist_rank, "Founder(s)": ", ".join(f.full_name for f in founders), "Company": c.name,
             "Website": c.website, "Fit type": fit_name(s.fit_type or "", labels), "Final": s.final_prime,
             "T": s.t, "I": s.i, "F": s.f, "Confidence": s.c, "Why they made the cut": s.why_line,
-            "How they fit upGrad": s.fit_line, "Evidence 1": ev[0].get("url"), "Evidence 2": ev[1].get("url"),
+            "How they fit upGrad": s.fit_line, "Founders: why they made the cut": founder_col("why"),
+            "Founders: how they fit upGrad": founder_col("fit"), "Evidence 1": ev[0].get("url"), "Evidence 2": ev[1].get("url"),
             "Evidence 3": ev[2].get("url"), "LinkedIn URL": ", ".join(f.linkedin_url for f in founders if f.linkedin_url),
             "Last verified": last.date().isoformat() if last else None, "entity_id": str(c.id),
             "prev_rank": prev.get(str(c.id)),
