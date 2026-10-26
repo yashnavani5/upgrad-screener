@@ -34,3 +34,6 @@ web/blob-report/
 Thumbs.db
 .vscode/
 .idea/
+
+# Vercel CLI link (repo root)
+/.vercel/
