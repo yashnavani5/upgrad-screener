@@ -1,0 +1,15 @@
+.git
+.venv
+.cache
+.pytest_cache
+**/__pycache__
+.env
+.env.*
+!.env.example
+web
+node_modules
+tests
+docker
+*.duckdb
+*.sqlite
+*.db

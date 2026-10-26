@@ -1,0 +1,364 @@
+{
+  "$defs": {
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "domain": {
+          "title": "Domain",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "domain"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "FounderFact": {
+      "additionalProperties": false,
+      "description": "A supported founder claim shown as background: prior_role, prior_exit or education.",
+      "properties": {
+        "field": {
+          "enum": [
+            "prior_role",
+            "prior_exit",
+            "education"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "additionalProperties": true,
+          "title": "Value",
+          "type": "object"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "value",
+        "source_url"
+      ],
+      "title": "FounderFact",
+      "type": "object"
+    },
+    "FounderProfile": {
+      "additionalProperties": false,
+      "description": "FounderRef plus the verified profile (v_shortlist).",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "linkedin_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Linkedin Url"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        },
+        "founder_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Founder Id"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "identity_verified": {
+          "default": false,
+          "title": "Identity Verified",
+          "type": "boolean"
+        },
+        "x_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "X Url"
+        },
+        "background": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/FounderFact"
+          },
+          "title": "Background",
+          "type": "array"
+        },
+        "line": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FounderProfile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Row of v_shortlist. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "run_id": {
+      "format": "uuid",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "is_latest": {
+      "title": "Is Latest",
+      "type": "boolean"
+    },
+    "rank": {
+      "minimum": 1,
+      "title": "Rank",
+      "type": "integer"
+    },
+    "entity_id": {
+      "format": "uuid",
+      "title": "Entity Id",
+      "type": "string"
+    },
+    "company": {
+      "title": "Company",
+      "type": "string"
+    },
+    "website": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Website"
+    },
+    "founders": {
+      "items": {
+        "$ref": "#/$defs/FounderProfile"
+      },
+      "title": "Founders",
+      "type": "array"
+    },
+    "fit_type": {
+      "pattern": "^[a-z][a-z0-9_]{1,19}$",
+      "title": "Fit Type",
+      "type": "string"
+    },
+    "final": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Final",
+      "type": "number"
+    },
+    "t": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "T",
+      "type": "number"
+    },
+    "i": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "I",
+      "type": "number"
+    },
+    "f": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "F",
+      "type": "number"
+    },
+    "confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "why_line": {
+      "title": "Why Line",
+      "type": "string"
+    },
+    "fit_line": {
+      "title": "Fit Line",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "last_verified": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Verified"
+    },
+    "reviewer_label": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewer Label"
+    },
+    "region": {
+      "default": "unknown",
+      "enum": [
+        "india",
+        "outside",
+        "unknown"
+      ],
+      "title": "Region",
+      "type": "string"
+    },
+    "region_basis": {
+      "default": "no location evidence",
+      "title": "Region Basis",
+      "type": "string"
+    },
+    "size_verified": {
+      "default": false,
+      "title": "Size Verified",
+      "type": "boolean"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "reviewer_note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewer Note"
+    },
+    "reviewer": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewer"
+    }
+  },
+  "required": [
+    "run_id",
+    "is_latest",
+    "rank",
+    "entity_id",
+    "company",
+    "founders",
+    "fit_type",
+    "final",
+    "t",
+    "i",
+    "f",
+    "confidence",
+    "why_line",
+    "fit_line",
+    "evidence"
+  ],
+  "title": "ShortlistRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

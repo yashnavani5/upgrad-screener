@@ -1,0 +1,213 @@
+# Discovery sources. Every scout reads its seeds here, so queries and URLs change without code edits.
+# Rules: every fetch respects robots.txt and per-domain rate limits; linkedin.com is never fetched.
+# Domains listed under `domains` are hints used to pick the right search result; they are verified at run time.
+
+# Cheap education prefilter (word-boundary, case-insensitive) applied before any LLM call.
+prefilter_keywords:
+- edtech
+- ed-tech
+- edutech
+- education
+- educational
+- e-learning
+- elearning
+- online learning
+- learning platform
+- lifelong learning
+- upskill
+- upskilling
+- reskilling
+- skilling
+- tutor
+- tutors
+- tutoring
+- curriculum
+- school
+- schools
+- k-12
+- k12
+- college
+- university
+- universities
+- campus
+- student
+- students
+- teacher
+- teachers
+- classroom
+- exam
+- exams
+- test prep
+- test-prep
+- coaching
+- assessment
+- proctoring
+- lms
+- mooc
+- certification
+- bootcamp
+- study abroad
+- admissions
+- cbse
+- jee
+- neet
+- upsc
+- corporate training
+- corporate learning
+- workforce training
+- language learning
+- vernacular
+- courses
+
+news_rss:
+  # Sites whose RSS feed is discovered from <link rel="alternate"> by `screener sources resolve-feeds`.
+  sites:
+  - {name: Entrackr, site: "https://entrackr.com"}
+  - {name: Inc42, site: "https://inc42.com"}
+  - {name: YourStory, site: "https://yourstory.com"}
+  - {name: ET Tech, site: "https://economictimes.indiatimes.com/tech"}
+  - {name: Mint, site: "https://www.livemint.com"}
+  - {name: TechCrunch India, site: "https://techcrunch.com/tag/india/"}
+  # Written by `screener sources resolve-feeds`: only feeds verified to parse with entries.
+  feeds:
+  - {name: Entrackr, site: https://entrackr.com, feed_url: https://entrackr.com/rss, entries: 50, verified_at: '2026-10-24'}
+  - {name: Inc42, site: https://inc42.com, feed_url: https://inc42.com/feed/, entries: 24, verified_at: '2026-10-24'}
+  - {name: ET Tech, site: https://economictimes.indiatimes.com/tech, feed_url: https://economictimes.indiatimes.com/rssfeeds/13357270.cms, 
+      entries: 50, verified_at: '2026-10-24'}
+  - {name: Mint, site: https://www.livemint.com, feed_url: https://www.livemint.com/rss/companies, entries: 35, verified_at: '2026-10-24'}
+  - {name: TechCrunch India, site: https://techcrunch.com/tag/india/, feed_url: https://techcrunch.com/tag/india/feed/, entries: 20, 
+      verified_at: '2026-10-24'}
+  news_queries:
+  - edtech funding India
+  - edtech acquisition India
+  - upskilling startup raises
+  - edtech startup raises seed round
+  - AI tutor startup India funding
+  - test prep startup raises India
+  - study abroad startup raises funding
+  batch_size: 10
+
+gdelt:
+  endpoint: "https://api.gdeltproject.org/api/v2/doc/doc"
+  # We ask for 24 months, but the DOC 2.0 API only returns roughly the last 3 months of coverage
+  # (verified 2026-10-25: a 24-month start date still returned only Jul-Oct 2026 articles).
+  months: 24
+  max_records: 250
+  rpm: 4             # GDELT documents 1 request / 5 s but throttles harder in practice
+  retry_wait_seconds: 30
+  # Keep queries simple: compound boolean queries return far fewer articles.
+  queries:
+    - edtech funding
+    - edtech raises
+    - edtech acquisition
+    - edtech (raises OR funding) sourcecountry:india
+    - upskilling startup funding
+    - online learning startup raises
+
+accelerators:
+  yc:
+    endpoint: "https://yc-oss.github.io/api/companies/all.json"
+    industries: [Education]
+    # Exact YC tags (case-insensitive). Not substrings: "learning" would match "Machine Learning".
+    tag_keywords: [Education, eLearning, AI-Enhanced Learning, EdTech, E-Learning, Tutoring, K-12, Higher Education, Upskilling, Language 
+        Learning]
+  portfolios:
+  - {name: Antler India, query: "Antler India portfolio companies", domains: [antler.co]}
+  - {name: Peak XV Surge, query: "Peak XV Surge portfolio companies", domains: [peakxv.com, surgeahead.com]}
+  - {name: 100x.VC, query: "100x.VC portfolio companies", domains: [100x.vc]}
+  - {name: Accel Atoms, query: "Accel Atoms cohort startups", domains: [atoms.accel.com, accel.com]}
+  - {name: Google for Startups Accelerator India, query: "Google for Startups Accelerator India cohort startups", domains: [
+        startup.google.com, blog.google]}
+
+vc_portfolios:
+- {name: Owl Ventures, query: "Owl Ventures portfolio", domains: [owlvc.com]}
+- {name: Reach Capital, query: "Reach Capital portfolio", domains: [reachcap.com]}
+- {name: GSV Ventures, query: "GSV Ventures portfolio", domains: [gsv.ventures]}
+- {name: Learn Capital, query: "Learn Capital portfolio", domains: [learncapital.com]}
+- {name: Blume Ventures, query: "Blume Ventures portfolio", domains: [blume.vc]}
+- {name: Elevation Capital, query: "Elevation Capital portfolio", domains: [elevationcapital.com]}
+- {name: Lightspeed India, query: "Lightspeed India portfolio", domains: [lsvp.com]}
+- {name: Peak XV, query: "Peak XV Partners portfolio companies", domains: [peakxv.com]}
+
+lists:
+  queries:
+  - HolonIQ India EdTech 50
+  - HolonIQ South Asia EdTech 50
+  - GSV Cup Elite 200 edtech startups
+  - top edtech startups India 2026 list
+  - most promising edtech startups India
+  pages_per_query: 2
+  exclude_domains: [linkedin.com, lnkd.in, f6s.com, youtube.com, facebook.com, x.com, twitter.com, instagram.com]
+
+github:
+  endpoint: "https://api.github.com/search/repositories"
+  rpm: 9             # unauthenticated search allows 10/min; GITHUB_TOKEN raises it
+  min_stars: 50
+  pushed_within_months: 12
+  queries:
+  - "topic:edtech"
+  - "topic:education"
+  - "topic:llm-tutor"
+  - "topic:ai-tutor"
+  - "topic:assessment"
+  - "topic:lms"
+  - "edtech in:name,description"
+  - "ai tutor in:name,description"
+
+producthunt:
+  endpoint: "https://api.producthunt.com/v2/api/graphql"
+  topics: [education, online-learning]
+  months: 18
+
+# Free stand-in for Product Hunt until PRODUCTHUNT_TOKEN is set (robots.txt allows these pages).
+betalist:
+  pages:
+  - "https://betalist.com/topics/education"
+  - "https://betalist.com/browse/education/education?page=2"
+  - "https://betalist.com/browse/education/education?page=3"
+
+hn:
+  endpoint: "https://hn.algolia.com/api/v1/search"
+  queries:
+  - "Launch HN education"
+  - "Launch HN learning"
+  - "Launch HN students"
+  - "Launch HN tutor"
+  - "Show HN tutor"
+  - "Show HN learning"
+  - "Show HN students"
+  - "Show HN edtech"
+  - "Show HN teachers"
+  - "Show HN course"
+  hits_per_query: 50
+
+xray:
+  strategy: cheap
+  results_per_query: 20
+  queries:
+  - 'site:linkedin.com/in ("founder" OR "co-founder") (edtech OR "ed-tech" OR education OR upskilling) (India OR Bengaluru OR Mumbai OR Delhi
+    OR Gurugram OR Hyderabad OR Pune)'
+  - 'site:linkedin.com/in ("founder" OR "co-founder") ("AI tutor" OR "AI tutoring" OR "personalized learning") India'
+  - 'site:linkedin.com/in ("founder" OR "co-founder") (assessment OR proctoring OR "test prep") India'
+  - 'site:linkedin.com/in ("founder" OR "co-founder") ("study abroad" OR "overseas education") India'
+  - 'site:linkedin.com/in ("founder" OR "co-founder") ("corporate learning" OR "corporate training" OR "L&D") India'
+  - 'site:linkedin.com/in ("founder" OR "co-founder") (vernacular OR "regional language" OR Bharat) (education OR upskilling) India'
+
+# X (Twitter): search-engine results only (scouts/x.py). x.com is never fetched: robots.txt disallows automated
+# access, including publish.x.com/oembed (checked 2026-10-25), and the API is paid.
+x:
+  strategy: cheap
+  results_per_query: 20
+  # Short plain queries: SearXNG returns nothing for long OR-queries on site:x.com (checked 2026-10-25).
+  # Yield is low (search engines index few X bios); X is most useful as a per-founder lookup (enrich/lookups.py).
+  queries:
+  - 'site:x.com co-founder edtech Bengaluru'
+  - 'site:x.com founder edtech startup'
+  - 'site:x.com founder edtech Delhi'
+  - 'site:x.com founder edtech Mumbai'
+  - 'site:x.com co-founder edtech Gurugram'
+  - 'site:x.com founder upskilling startup'
+  - 'site:x.com founder test prep startup'
+  - 'site:x.com founder study abroad startup'
+  - 'site:x.com co-founder learning platform India'
+  - 'site:x.com founder skilling startup India'

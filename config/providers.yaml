@@ -1,0 +1,91 @@
+# External provider limits, quotas and search strategies.
+# Quotas protect free tiers: when a provider's counter for the period reaches `limit`, the router skips it.
+# Counters live in the provider_quota table. If the DB is unreachable, providers with requires_quota: true
+# are disabled for the run (fail safe), while SearXNG and ddgs keep working.
+#
+# Sources (checked 2026-10-25, re-verify against your own plan before raising limits):
+#   Tavily:  https://docs.tavily.com/documentation/api-credits  -> free plan 1,000 credits/month; basic search = 1 credit
+#   SerpAPI: https://serpapi.com/pricing                        -> free plan; pages disagree (100 vs 250/month), 100 used
+#   Exa:     https://exa.ai/docs/reference/pricing              -> free tier $10/month credits; search $7 / 1k requests
+
+search:
+  default_results: 10
+  providers:
+    searxng:  {requires_quota: false, rpm: 30}
+    # ddgs engines (re-checked 2026-10-25 18:40): this ddgs version has no google/yandex text backends; startpage
+    # refuses or blanks automated queries. The rest are flaky under load (rate limits), so all of them are tried;
+    # SearXNG stays the primary. "auto" re-enables every engine, startpage included.
+    ddgs:     {requires_quota: false, rpm: 10, backend: "duckduckgo, yahoo, brave, mojeek, wikipedia"}
+    exa:      {requires_quota: true, period: month, limit: 1000, cost_per_call: 1, rpm: 30}
+    tavily:   {requires_quota: true, period: month, limit: 1000, cost_per_call: 1, rpm: 30}
+    serpapi:  {requires_quota: true, period: month, limit: 100, cost_per_call: 1, rpm: 10}
+    gemini_grounding: {requires_quota: false}   # Gemini is never rate limited client-side
+  strategies:
+    cheap:    [searxng, ddgs, exa, tavily, serpapi, gemini_grounding]
+    semantic: [exa, searxng, ddgs, tavily, serpapi, gemini_grounding]
+    quality:  [gemini_grounding, serpapi, tavily, exa, searxng, ddgs]
+
+llm:
+  # No client-side rate limiting (RPM/RPD) for Gemini by design. Model names come from GEMINI_MODEL_* env vars.
+  # API 429/5xx errors are still retried with backoff (max_retries). RUN_MAX_LLM_CALLS still caps calls per run.
+  # USD prices per 1M tokens: drive cost tracking AND the spend caps below. Must match the models in .env.
+  # A null price with any USD cap set makes that role's calls fail (fail closed) instead of spending uncounted.
+  # Source: Gemini 3 Flash $0.50 in / $3.00 out (third-party price trackers citing ai.google.dev, checked
+  # 2026-10-26; verify on https://ai.google.dev/gemini-api/docs/pricing). Thinking tokens are billed as output.
+  prices_per_million_tokens:
+    fast:  {input: 0.50, output: 3.00}
+    smart: {input: 0.50, output: 3.00}   # same model when GEMINI_MODEL_SMART is empty
+    embed: {input: 0.15, output: null}   # gemini-embedding-001
+  # Google Search grounding fee per grounded request, on top of tokens. Conservative placeholder (Gemini 2.x
+  # billed $35 / 1,000 grounded prompts); check the pricing page for your model and lower it if cheaper.
+  grounding_usd_per_request: 0.035
+  # Output tokens reserved per call when checking a cap before sending (thinking + answer); settled to actual.
+  reserve_output_tokens: 2000
+  # Gemini 3 thinking level per role (minimal | low | medium | high); null = model default (high, expensive).
+  # Set to null if your model doesn't support thinking_level (pre-Gemini-3 models).
+  thinking_level:
+    fast: low
+    smart: low
+  max_retries: 5
+  embed_batch_size: 100
+
+budget:
+  # Hard spend caps (USD). Every Gemini call reserves its estimated cost first and is refused (not sent) if a
+  # cap would be exceeded. Daily/monthly caps are shared by every process (run, worker, enrich, ai-triage,
+  # dashboard rescores) via provider_quota; days and months are UTC. RUN_BUDGET_USD (.env) caps one process.
+  # null = no cap at that level. The dashboard's "Ask" box (web/) calls Gemini directly and is not counted.
+  gemini_daily_usd_limit: 8.0          # raised from 5.0 on 2026-10-26 to finish the reviewer picks
+  gemini_monthly_usd_limit: 40.0
+  # Budget guard (screener run): stages are sized so the run stops gracefully BEFORE a limit is exceeded.
+  # Limits: RUN_MAX_LLM_CALLS per run (.env), the USD caps above and, optionally, a daily Gemini request cap.
+  gemini_daily_limit: null      # e.g. set to your Gemini free-tier requests/day; null = only the per-run cap
+  reserve_calls: 60             # kept back for score/explain when sizing enrich/verify
+  estimates:                    # Gemini calls per unit of work, measured on real runs (2026-10-25)
+    usd_per_call: 0.004         # avg cost of one call on Gemini 3 Flash with thinking=low (sizes stages from USD)
+    enrich_per_company: 8       # 1,078 calls / 150 companies = 7.2, rounded up
+    verify_per_source: 1.05     # 771 verifier calls / 769 sources
+    pairwise_per_item: 20       # ~10 comparisons x 2 orders
+    explain_per_company: 1.5    # 1 call, sometimes regenerated
+    light_per_prospect: 1
+
+fetch:
+  per_domain_rpm: 20          # at most one request every 3 s per domain
+  jina_rpm: 20
+  timeout_seconds: 20
+  max_bytes: 5000000
+  min_text_chars: 400         # below this, try Playwright, then Jina Reader
+  playwright_timeout_seconds: 30
+
+http:
+  max_concurrency: 8          # global cap on simultaneous outbound requests
+  max_retries: 3
+  backoff_base_seconds: 1.0
+  backoff_cap_seconds: 60.0
+
+cache:
+  ttl_days:
+    fetch: 7
+    search: 3
+    llm: null                 # forever
+    embed: null               # forever
+    robots: 1

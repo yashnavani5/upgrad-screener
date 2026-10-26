@@ -1,0 +1,99 @@
+# Lakhs-scale universe: registries -> validation -> triage (code) -> light tier (1 fetch + 1 LLM) -> deep tier.
+# Editable assumptions. Verdicts are stored, so no entity is crawled or sent to the LLM twice unless its source
+# row changes or `light.refresh_days` passes.
+
+mca:
+  # data.gov.in API (needs DATA_GOV_IN_API_KEY). Checked live on 2026-10-25 with the project key:
+  #   4dbe5667-7b6b-41d7-82af-211562424d9a = "Registrars of Companies (RoC)-wise Company Master Data", Ministry of
+  #   Corporate Affairs, 37,38,721 companies, updated 2026-10-13. One national resource covers every RoC.
+  endpoint: "https://api.data.gov.in/resource/{resource_id}"
+  resource_ids: [4dbe5667-7b6b-41d7-82af-211562424d9a]
+  page_size: 10000             # the API returns up to 10,000 rows per call (~11 s, ~9 MB)
+  max_bytes: 30000000          # response cap for these pages (the general fetch cap is 5 MB)
+  page_retries: 5              # per page, exponential backoff (5 s .. 80 s); progress is checkpointed per page
+  rpm: 30
+  # Server-side filters (exact match). Inactive companies are never crawled, so they are not downloaded.
+  server_filters: {CompanyStatus: Active}
+  # Store only education candidates (education NIC in the CIN, or education words in the name): most edtechs
+  # register under IT codes (72xxx), so the industry column alone would miss them.
+  store_only_candidates: true
+  # Column names differ between files; first match wins (case-insensitive).
+  fields:
+    cin: [corporate_identification_number, cin, company_cin]
+    name: [company_name, name]
+    status: [company_status, status]
+    registered_on: [date_of_registration, company_registration_date, companyregistrationdate_date, registration_date,
+                    date_of_incorporation]
+    paid_up_capital: [paidup_capital, paid_up_capital, paidupcapital]
+    state: [registered_state, company_state_code, state]
+    activity: [principal_business_activity_as_per_cin, principal_business_activity, company_industrial_classification,
+               company_ind_sub_category, activity]
+    address: [registered_office_address, address]
+    category: [company_category, category]
+    company_class: [company_class, class]
+
+dpiit:
+  # Dataful export of DPIIT-recognised startups (DPIIT_STARTUPS_CSV). Column names matched case-insensitively.
+  fields:
+    name: [company name, startup name, name]
+    legal_name: [legal name]
+    cin: [cin, cin number]
+    website: [company website, website]
+    state: [state]
+    city: [city]
+    status: [company status, status]
+    industry: [focus industry, industry]
+    sector: [focus sector, sector]
+    services: [services provided, services]
+    recognition_id: [dpiit number, recognition number, startup id]
+
+education:
+  # NIC codes embedded in a CIN (chars 2-6). NIC-2008 division 85 = Education; NIC-2004 division 80 = Education.
+  nic_prefixes: ["85", "80"]
+  dpiit_terms: [education, edtech, e-learning, elearning, skill development, learning, tutoring, test prep]
+  # Registry names carry no context, so names get their own vocabulary (word match) plus word prefixes.
+  name_terms: [education, educational, learning, academy, school, schools, institute, coaching, classes, tutors,
+               tutorial, training, edtech, upskill, skills, knowledge, vidyalaya, gurukul, pathshala, campus]
+  name_prefixes: [edu, learn, skill, tutor, vidya, shiksha, gyan, teach]
+
+validation:
+  cin_pattern: "^[LU][0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$"
+  llpin_pattern: "^[A-Z]{3}-[0-9]{4}$"
+  name_match_jw: 0.85          # DPIIT legal/brand name vs MCA name for the same CIN
+  active_statuses: [active, "active compliant"]
+  inactive_statuses: [strike off, struck off, "under process of striking off", dissolved, liquidated, amalgamated,
+                      dormant, "under liquidation", "converted to llp"]
+
+triage:
+  weights:
+    nic_education: 3.0
+    name_education_keyword: 2.0
+    dpiit_education_sector: 3.0
+    dpiit_recognised: 1.0
+    scout_signal: 2.0
+    accelerator_listed: 2.0    # e.g. YC directory (yc-oss)
+    cross_validated: 1.0
+    website_known: 1.0
+    recent: 1.0                # incorporated within `recent_years`
+  recent_years: 10
+  min_score_for_light: 3.0     # below this a prospect is triaged out (kept, never crawled)
+  require_active: true         # inactive/struck-off companies are never crawled
+
+light:
+  daily_llm_budget: 0          # Gemini-fast classification calls per UTC day. 0 = registry light tier paused
+                               # (2026-10-26: registry population stopped to protect the Gemini spend cap;
+                               # was 150000 for the 2026-10-25 sweep). Raise to resume, e.g. 1000.
+  search_rpm: 10               # free search engines (SearXNG / ddgs), when used
+  # Website discovery for registry rows (no website listed): "quality" = Gemini grounding (Google Search) first,
+  # not throttled; the homepage must still name the company. "cheap" = SearXNG/ddgs first (slow, ~6k/day).
+  website_strategy: quality
+  browser_fallback: false      # light checks use plain HTTP only (Playwright is ~10x slower); deep tier keeps it
+  refresh_days: 180            # re-check a stored verdict after this many days
+  max_attempts: 3
+  fit_requires: [is_education]
+
+worker:
+  concurrency: 64               # per worker process; run several: docker compose --profile pipeline up -d --scale worker=3
+  idle_sleep_seconds: 30
+  lock_seconds: 900            # a claimed task is retried by another worker after this if not finished
+  deep_after_light: true       # fit prospects are queued for deep enrichment + verification automatically

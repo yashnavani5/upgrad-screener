@@ -1,0 +1,74 @@
+# Enrichment + verification settings (`screener enrich`, `screener verify`). Editable assumptions.
+
+currency:
+  # INR per USD. Source: RBI reference rate 92.6492 on 2026-04-10 via the MSEI archive
+  # (https://www.msei.in/markets/currency/historical-data/rbireferenceratearchives.aspx).
+  # Update to a current RBI reference rate before relying on USD conversions. The original amount is always kept.
+  inr_per_usd: 92.6492
+  rate_as_of: "2026-04-10"
+
+# Domains that may appear in search results but are NEVER fetched: snippets only.
+snippet_only_domains: [linkedin.com, lnkd.in, crunchbase.com, tracxn.com, x.com, twitter.com]
+
+limits:
+  site_pages: 4             # homepage + about/team/careers
+  news_articles: 4          # per company (scout articles first, then search)
+  revenue_pages: 2
+  founder_pages: 2
+  page_chars: 15000         # text sent to the extractor / verifier per page
+  concurrency: 6            # companies enriched in parallel
+  step_timeout_seconds: 180 # per source step (site, news, revenue, ...)
+  company_timeout_seconds: 600  # whole company; partial results are kept
+
+incremental:
+  # Incremental runs (default) only re-fetch new or stale entities; a resumed run never redoes finished work.
+  enrich_stale_days: 30       # a company enriched more recently than this is not re-enriched
+
+searches:
+  funding: '"{name}" raises OR funding OR acquired'
+  revenue: '"{name}" revenue FY'
+  registry: '"{name}" tofler OR zaubacorp'
+  founders: '"{name}" founder'
+
+registry_domains: [tofler.in, zaubacorp.com]
+
+# Targeted lookups (enrich/lookups.py) for the top-ranked companies, only where data is missing. Each is recorded
+# in companies.lookups / founders.lookups, so it is never paid twice.
+lookups:
+  top_n: 80                  # companies considered (by the same ranking as enrich/verify targets)
+  pages_per_query: 2         # pages fetched per query (snippet-only domains are never fetched)
+  founders_per_company: 2
+  queries:
+    size: ['"{name}" total funding raised', '"{name}" employees']
+    location: ['"{name}" headquartered', '"{name}" based in']
+    founder: ['"{founder}" "{name}"', '"{founder}" founder previously OR formerly OR ex']
+    founder_x: ['"{founder}" x.com', 'site:x.com "{founder}" {name}']   # X bio via search snippet (never fetched); bio must name the company
+    company_x: ['site:x.com "{name}" (raised OR funding OR launch OR hiring)']
+
+site_link_keywords:
+  about: [about, company, story, who-we-are, mission]
+  team: [team, people, founders, leadership, our-team]
+  careers: [careers, jobs, join, hiring, work-with-us]
+
+# Preliminary priority (ordering only; NOT the final score): weights for cheap signals.
+priority:
+  per_scout: 1.0
+  per_mention_log: 1.0
+  has_domain: 1.0
+  india_signal: 1.5
+  has_founder: 0.5
+
+verification:
+  batch_size: 12            # claims from the same page verified in one call
+  grounding_threshold: 90
+  liveness_months: 12
+  # Claims that need 2 independent domains or 1 primary source.
+  corroboration_fields: [funding_round, revenue, acquired, prior_exit]
+  amount_tolerance: 0.10    # amounts within 10% count as the same fact
+  government_suffixes: [gov.in, nic.in, gov, gov.uk, europa.eu]
+  primary_domains: [mca.gov.in, sebi.gov.in, bseindia.com, nseindia.com, sec.gov]
+
+pdl:
+  endpoint: "https://api.peopledatalabs.com/v5/person/enrich"
+  top_n: 100
+  monthly_limit: 100

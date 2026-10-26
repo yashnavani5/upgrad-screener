@@ -1,0 +1,73 @@
+# Local infrastructure for Phase 1 (see docs/ARCHITECTURE.md section 10).
+# Values come from .env (copy .env.example). Ports bind to 127.0.0.1 only.
+#   docker compose up -d                 # Postgres + SearXNG
+#   docker compose up -d postgres        # Postgres only
+
+name: upgrad-screener
+
+include:
+  - path: docker/searxng/docker-compose.yml
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.7-pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-screener}
+      PIPELINE_RW_PASSWORD: ${PIPELINE_RW_PASSWORD:?set PIPELINE_RW_PASSWORD in .env}
+      WEB_RO_PASSWORD: ${WEB_RO_PASSWORD:?set WEB_RO_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Runs only when the data volume is empty (first start).
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Pipeline and worker (profile "pipeline": not started by a plain `docker compose up`).
+  #   docker compose --profile pipeline build
+  #   docker compose run --rm pipeline doctor
+  #   docker compose run --rm pipeline run --top 150
+  #   docker compose --profile pipeline up -d worker
+  pipeline: &pipeline
+    build: .
+    image: upgrad-screener-pipeline:local
+    profiles: ["pipeline"]
+    env_file: .env
+    environment: &pipeline_env
+      # Inside the compose network: service names, not localhost.
+      DATABASE_URL: postgresql+psycopg://pipeline_rw:${PIPELINE_RW_PASSWORD}@postgres:5432/${POSTGRES_DB:-screener}
+      DATABASE_ADMIN_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-screener}
+      SEARXNG_URL: http://searxng:8080
+      CACHE_DIR: /app/.cache
+    volumes:
+      - pipeline-cache:/app/.cache
+      # A service-account JSON given as a path must be mounted, e.g.:
+      # - C:/secrets/screener-sa.json:/run/secrets/sa.json:ro   (then GOOGLE_SERVICE_ACCOUNT_JSON=/run/secrets/sa.json)
+    depends_on:
+      postgres:
+        condition: service_healthy
+      searxng:
+        condition: service_healthy
+    command: ["doctor"]
+
+  worker:
+    <<: *pipeline
+    restart: unless-stopped
+    command: ["worker"]
+    # Live code and config from the repo (read-only): `docker compose restart worker` picks up changes without
+    # an image rebuild. Rebuild only when Python dependencies (uv.lock) change.
+    volumes:
+      - pipeline-cache:/app/.cache
+      - ./src:/app/src:ro
+      - ./config:/app/config:ro
+
+volumes:
+  pgdata:
+  pipeline-cache:

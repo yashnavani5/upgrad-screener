@@ -1,0 +1,127 @@
+# All scoring weights and constants (docs/SPEC.md section 3).
+# Code reads these values; no magic numbers in scoring code.
+version: 1
+
+normalization:
+  method: percentile_rank      # within the current pool
+  log_transform_money: true    # log1p before ranking
+
+track_record:                  # T, per founder; max over co-founders
+  weights:
+    prior_exit: 0.25
+    prior_vc_backed: 0.20
+    top_investor: 0.15
+    scale_pct_log: 0.15
+    years_in_edu_pct: 0.10
+    operator_pedigree: 0.10
+    accelerator_or_award: 0.05
+  team_depth_bonus: 0.05
+  cap: 1.0
+  # Feature definitions (assumptions; all from supported claims):
+  accelerator_github_min_stars: 100   # technical depth (SPEC 1.1) via a supported GitHub repo with >= this many stars
+  operator_min_role_keywords: [founder, co-founder, ceo, cto, coo, cfo, chief, vp, vice president, head, director,
+                               general manager, gm, lead, manager, principal]
+  # Scaled edtechs for operator pedigree (>= $50M raised or >= 500 employees at the time). Editable assumption.
+  scaled_edtechs: [upGrad, Byju's, Unacademy, PhysicsWallah, Physics Wallah, Eruditus, Emeritus, Simplilearn, Coursera,
+                   Vedantu, Scaler, InterviewBit, Toppr, Great Learning, Testbook, Classplus, Doubtnut, Cuemath,
+                   LEAD School, Leverage Edu, upGrad Abroad, Adda247, Khatabook, Udemy, Duolingo, 2U, edX, Chegg]
+  # Tier-1 and edtech-specialist investors for top_investor. Editable assumption.
+  top_investors: [Peak XV, Sequoia, Accel, Lightspeed, Elevation, Blume, Matrix Partners, Z47, Nexus Venture,
+                  Kalaari, Chiratae, Owl Ventures, Reach Capital, GSV, Learn Capital, Tiger Global, SoftBank,
+                  General Atlantic, Prosus, Y Combinator, Bertelsmann India, Omidyar, Lumikai, Info Edge,
+                  WestBridge, Temasek, Stellaris, 3one4, Together Fund, Antler, 100X.VC]
+
+interesting:                   # I = 0.5*M + 0.5*N
+  weights:
+    momentum: 0.5
+    novelty: 0.5
+  momentum:
+    recency_half_life_days: 180
+    funding_window_days: 730        # rounds counted for funding velocity
+  novelty:
+    cluster_growth_window_quarters: 8
+    k_min: 2
+    k_max: 12
+    min_points_per_cluster: 3        # k_max is also capped at n / this
+    crowded_quantile: 0.5            # clusters at/above this size quantile are "crowded"
+    random_state: 42
+
+fit:
+  aggregation: max             # F = max over lenses; fit_type = argmax
+  lenses: [acquire, partner, co_build]
+  tag_target: 2                # overlap of 2 matching tags counts as full overlap
+  geo:                         # multiplier by India presence (country/city claims)
+    india: 1.0
+    unknown: 0.6
+    outside: 0.3
+  acquire:
+    max_total_raised_usd: 100000000     # mirrors exclusions size_ceiling
+    unknown_size_factor: 0.7            # no verified funding or headcount: a giant must not pass silently
+    very_early_factor: 0.6              # pre-seed/seed companies are too early to buy (co-build instead)
+  co_build:
+    very_early_max_raised_usd: 3000000  # "very early": under $3M raised ...
+    very_early_stages: [pre-seed, seed, angel, bootstrapped]   # ... or only these stages ...
+    very_early_max_age_years: 3         # ... or founded at most 3 years ago (when nothing else is known)
+    early_max_raised_usd: 10000000      # "small or early"
+    early_stages: [pre-seed, seed, angel, pre-series a, bootstrapped]
+    early_factor: 0.75                  # co-build credit for early (not very early) companies; later = 0.5
+    founder_t_boost_min: 0.4            # strong founder T (was 0.6: almost no founder reached it) ...
+    boost: 0.2                          # ... adds this to the co-build lens (capped at 1)
+
+shrinkage:
+  k: 3                         # s_adj = (n*s_raw + k*mu_pool) / (n + k)
+
+confidence:
+  cap: 1.0                     # C = min(1, verified_claims / expected_claims)
+  # Assumption (2026-10-25): a well-covered company has ~10 verified claims plus ~4 per founder (2 founders max).
+  expected_claims:
+    company: 10
+    founder: 4
+    max_founders: 2
+
+final:                         # Final = T^a * I^b * F^c * C^d
+  exponents:
+    T: 0.30
+    I: 0.30
+    F: 0.30
+    C: 0.10
+  epsilon: 0.01                # floor applied to each factor before exponentiation
+  # India-first (decision 2026-10-25): Final x this multiplier by verified location. Outside-India companies can
+  # still rank, but need a clearly stronger case. Location evidence: score/features.py infer_geo.
+  region_multiplier:
+    india: 1.0
+    unknown: 0.85
+    outside: 0.6
+
+shortlist_gate:
+  min_verified_signal_claims: 3
+
+pairwise:
+  top_n: 60
+  both_orders: true
+  comparisons_per_item: 10     # adaptive: round 1 rank neighbours, round 2 closest BT estimates
+  neighbour_window: 3
+  alpha: 0.01                  # choix ILSR regularization
+  min_answered_share: 0.5      # fewer answered judgments (e.g. Gemini quota) -> reuse the last run's BT percentiles
+  blend:                       # Final' = 0.7*Final + 0.3*pct(BT)
+    final: 0.7
+    bt_pct: 0.3
+
+mmr:
+  lambda: 0.75
+  same_fit_type_sim_bonus: 0.1
+  shortlist_min: 10
+  shortlist_max: 15
+  min_per_fit_type: 2          # guaranteed when the pool allows
+  min_india: 10                # India-first: at least this many India-located companies when the pool allows
+  near_miss_count: 15          # next-ranked eligible candidates recorded as LOW_FIT near-misses
+
+calibration:
+  recall_at: 50
+  perturbation_pct: 0.20
+  stability_top_k: 15          # Kendall tau over the top 15
+  perturbation_trials: 20
+  random_seed: 7
+  seeds:                       # auto seeds (src/screener/score/seeds.py), refreshed after every scoring run
+    max_positives: 40
+    max_negatives: 30

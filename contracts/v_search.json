@@ -1,0 +1,225 @@
+{
+  "additionalProperties": false,
+  "description": "Row of v_search. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "kind": {
+      "enum": [
+        "company",
+        "founder",
+        "registry"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "entity_id": {
+      "format": "uuid",
+      "title": "Entity Id",
+      "type": "string"
+    },
+    "company_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Company Id"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "company": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Company"
+    },
+    "website": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Website"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "location": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Location"
+    },
+    "region": {
+      "default": "unknown",
+      "enum": [
+        "india",
+        "outside",
+        "unknown"
+      ],
+      "title": "Region",
+      "type": "string"
+    },
+    "shortlist_rank": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Shortlist Rank"
+    },
+    "rank": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rank"
+    },
+    "fit_type": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_]{1,19}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fit Type"
+    },
+    "final": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Final"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Status"
+    },
+    "cin": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cin"
+    },
+    "registered_on": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Registered On"
+    },
+    "paid_up_capital_inr": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Paid Up Capital Inr"
+    },
+    "authorized_capital_inr": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Authorized Capital Inr"
+    },
+    "total_raised_usd": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Total Raised Usd"
+    }
+  },
+  "required": [
+    "kind",
+    "entity_id",
+    "name"
+  ],
+  "title": "SearchRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -1,0 +1,284 @@
+{
+  "$defs": {
+    "ConfigSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "weights": {
+          "additionalProperties": true,
+          "title": "Weights",
+          "type": "object"
+        },
+        "gap_map": {
+          "additionalProperties": true,
+          "title": "Gap Map",
+          "type": "object"
+        },
+        "exclusions": {
+          "additionalProperties": true,
+          "title": "Exclusions",
+          "type": "object"
+        },
+        "models": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Models",
+          "type": "object"
+        }
+      },
+      "required": [
+        "weights",
+        "gap_map",
+        "exclusions",
+        "models"
+      ],
+      "title": "ConfigSnapshot",
+      "type": "object"
+    },
+    "ProviderUsage": {
+      "additionalProperties": false,
+      "properties": {
+        "calls": {
+          "default": 0,
+          "title": "Calls",
+          "type": "integer"
+        },
+        "errors": {
+          "default": 0,
+          "title": "Errors",
+          "type": "integer"
+        },
+        "cost_usd": {
+          "default": 0.0,
+          "title": "Cost Usd",
+          "type": "number"
+        },
+        "quota_used": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quota Used"
+        },
+        "quota_limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quota Limit"
+        }
+      },
+      "title": "ProviderUsage",
+      "type": "object"
+    },
+    "RunCounts": {
+      "additionalProperties": false,
+      "properties": {
+        "candidates": {
+          "default": 0,
+          "title": "Candidates",
+          "type": "integer"
+        },
+        "companies": {
+          "default": 0,
+          "title": "Companies",
+          "type": "integer"
+        },
+        "founders": {
+          "default": 0,
+          "title": "Founders",
+          "type": "integer"
+        },
+        "claims_supported": {
+          "default": 0,
+          "title": "Claims Supported",
+          "type": "integer"
+        },
+        "shortlisted": {
+          "default": 0,
+          "title": "Shortlisted",
+          "type": "integer"
+        }
+      },
+      "title": "RunCounts",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Row of v_runs. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "run_id": {
+      "format": "uuid",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "running",
+        "succeeded",
+        "failed",
+        "partial"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "current_stage": {
+      "anyOf": [
+        {
+          "enum": [
+            "discover",
+            "resolve",
+            "enrich",
+            "verify",
+            "score",
+            "explain",
+            "publish"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Current Stage"
+    },
+    "stage_progress": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Stage Progress",
+      "type": "number"
+    },
+    "trigger": {
+      "enum": [
+        "cli",
+        "dashboard",
+        "schedule"
+      ],
+      "title": "Trigger",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Finished At"
+    },
+    "heartbeat_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Heartbeat At"
+    },
+    "counts": {
+      "$ref": "#/$defs/RunCounts"
+    },
+    "provider_usage": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ProviderUsage"
+      },
+      "title": "Provider Usage",
+      "type": "object"
+    },
+    "cost_usd": {
+      "minimum": 0.0,
+      "title": "Cost Usd",
+      "type": "number"
+    },
+    "error_summary": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Summary"
+    },
+    "config_snapshot": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ConfigSnapshot"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "sheet_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sheet Url"
+    },
+    "is_latest": {
+      "title": "Is Latest",
+      "type": "boolean"
+    },
+    "checkpoints": {
+      "additionalProperties": true,
+      "default": {},
+      "title": "Checkpoints",
+      "type": "object"
+    },
+    "options": {
+      "additionalProperties": true,
+      "default": {},
+      "title": "Options",
+      "type": "object"
+    }
+  },
+  "required": [
+    "run_id",
+    "status",
+    "stage_progress",
+    "trigger",
+    "started_at",
+    "counts",
+    "provider_usage",
+    "cost_usd",
+    "is_latest"
+  ],
+  "title": "RunRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "description": "Row of v_activity. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "provider": {
+      "title": "Provider",
+      "type": "string"
+    },
+    "calls_5m": {
+      "minimum": 0,
+      "title": "Calls 5M",
+      "type": "integer"
+    },
+    "errors_5m": {
+      "minimum": 0,
+      "title": "Errors 5M",
+      "type": "integer"
+    },
+    "calls_1h": {
+      "minimum": 0,
+      "title": "Calls 1H",
+      "type": "integer"
+    },
+    "median_latency_ms_1h": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Median Latency Ms 1H"
+    },
+    "last_call_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Call At"
+    }
+  },
+  "required": [
+    "provider",
+    "calls_5m",
+    "errors_5m",
+    "calls_1h"
+  ],
+  "title": "ActivityRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

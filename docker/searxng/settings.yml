@@ -1,0 +1,31 @@
+# SearXNG settings for the pipeline's search router (first provider).
+# Only overrides are listed; everything else uses SearXNG defaults.
+# secret_key is supplied at runtime via the SEARXNG_SECRET env var (see docker-compose.yml).
+use_default_settings:
+  engines:
+    keep_only:
+      - google
+      - bing
+      - duckduckgo
+      - brave
+
+general:
+  instance_name: "upGrad Founder Screener (local)"
+
+server:
+  bind_address: "0.0.0.0"
+  port: 8080
+  limiter: false          # local, single client; never expose this instance publicly
+  image_proxy: false
+  public_instance: false
+
+search:
+  safe_search: 0
+  default_lang: "en-IN"
+  formats:
+    - html
+    - json                # the pipeline calls /search?format=json
+
+outgoing:
+  request_timeout: 6.0
+  max_request_timeout: 12.0

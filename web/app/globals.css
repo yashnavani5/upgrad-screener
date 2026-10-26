@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/* Brand tokens: docs/BRAND.md (colours extracted from upgrad.com, contrast-checked to WCAG AA).
+   Components use these tokens only; no raw hex values outside this file. */
+:root {
+  --brand: #EE2C3C;          /* upGrad --branding-primary */
+  --brand-strong: #DA202F;   /* upGrad CTA gradient end: button backgrounds (white text passes AA) */
+  --brand-hover: #BE2330;    /* upGrad --primary-shade-1 */
+  --brand-subtle: #FCF0F1;   /* upGrad --system-fill-bg-accent-1 */
+
+  --ink: #333333;            /* upGrad --greyscale-1 */
+  --ink-muted: #666666;      /* upGrad --greyscale-2 */
+  --surface: #FFFFFF;
+  --surface-alt: #F5F5F5;    /* upGrad --greyscale-7 */
+  --border: #E6E6E6;         /* upGrad --greyscale-5 */
+  --border-strong: #8C8C8C;
+
+  --success: #087A3A;  --success-subtle: #E7F5EC;
+  --warning: #9A5B00;  --warning-subtle: #FDF3E1;
+  --danger:  #C2410C;  --danger-subtle:  #FDEEE6;
+  --info:    #4A5568;  --info-subtle:    #EEF1F5;
+
+  --fit-acquire: #1D4ED8;  --fit-acquire-subtle: #E6EDFB;
+  --fit-partner: #0F766E;  --fit-partner-subtle: #E3F4F2;
+  --fit-cobuild: #7E22CE;  --fit-cobuild-subtle: #F3E8FD;
+}
+
+@theme {
+  --radius-card: 10px;
+  --radius-control: 6px;
+  --shadow-card: 0 1px 2px rgba(9, 30, 66, .06), 0 4px 12px rgba(9, 30, 66, .06);
+  --shadow-pop: 0 12px 28px rgba(9, 30, 66, .10);
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-subtle: var(--brand-subtle);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-danger: var(--danger);
+  --color-danger-subtle: var(--danger-subtle);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
+  --color-fit-acquire: var(--fit-acquire);
+  --color-fit-acquire-subtle: var(--fit-acquire-subtle);
+  --color-fit-partner: var(--fit-partner);
+  --color-fit-partner-subtle: var(--fit-partner-subtle);
+  --color-fit-cobuild: var(--fit-cobuild);
+  --color-fit-cobuild-subtle: var(--fit-cobuild-subtle);
+
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --text-xs: 12px;   --text-xs--line-height: 16px;
+  --text-sm: 14px;   --text-sm--line-height: 20px;
+  --text-base: 16px; --text-base--line-height: 24px;
+  --text-lg: 20px;   --text-lg--line-height: 28px;
+  --text-xl: 24px;   --text-xl--line-height: 32px;
+  --text-2xl: 32px;  --text-2xl--line-height: 40px;
+}
+
+html { background: var(--surface-alt); }
+body { background: var(--surface-alt); color: var(--ink); }
+.tabular { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 4px; }
+
+/* Component classes (Tailwind 4 custom utilities, so they can be composed with @apply). */
+@utility card {
+  @apply rounded-card bg-surface shadow-card border border-border min-w-0; /* let grid cells shrink on phones */
+}
+/* Buttons respond to hover (lift), press (sink) and keyboard focus; disabled buttons stay still. */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-control px-4 h-10 text-sm font-medium select-none
+    transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-out
+    hover:-translate-y-px active:translate-y-0 active:scale-[0.97]
+    disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0 disabled:scale-100 disabled:shadow-none;
+}
+@utility btn-primary {
+  @apply btn bg-brand-strong text-white hover:bg-brand-hover hover:shadow-[0_6px_16px_-6px_rgb(218_32_47/0.55)];
+}
+@utility btn-secondary {
+  @apply btn bg-surface text-ink border border-border-strong hover:bg-surface-alt hover:border-brand/40 hover:shadow-card;
+}
+@utility btn-ghost {
+  @apply btn text-ink-muted hover:text-ink hover:bg-surface-alt;
+}
+/* Cards that open something: lift on hover, sink on press. */
+@utility card-hover {
+  @apply transition-[box-shadow,transform,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-pop
+    hover:border-brand/30 active:translate-y-0;
+}
+@utility chip {
+  @apply inline-flex items-center gap-1 rounded-control px-2 h-6 text-xs font-medium whitespace-nowrap;
+}
+@utility link {
+  @apply text-brand-strong underline-offset-2 hover:underline transition-colors hover:text-brand-hover;
+}
+@utility th {
+  @apply px-3 py-2 text-left text-xs font-medium text-ink-muted uppercase tracking-wide whitespace-nowrap;
+}
+@utility td {
+  @apply px-3 py-2 text-sm align-top;
+}
+@utility input {
+  @apply h-10 rounded-control border border-border-strong bg-surface px-3 text-sm;
+}
+
+/* Motion: dialogs, toasts, chips. Everything is switched off for people who ask for reduced motion. */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop-in { from { opacity: 0; transform: translate(-50%, 8px) scale(0.98); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.animate-slide-up { animation: slide-up 220ms ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+}
+
+/* Print and PDF export (/shortlist/report): white page, no site chrome or motion, cards never split. */
+@media print {
+  html, body { background: #fff; }
+  * { animation: none !important; transition: none !important; }
+  .card, .print-card { break-inside: avoid; box-shadow: none; }
+  .print-break { break-before: page; }
+  a { text-decoration: none; }
+}

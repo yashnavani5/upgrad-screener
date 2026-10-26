@@ -1,0 +1,133 @@
+# Reviewer picks: companies the upGrad team asked the pipeline to consider (`screener reviewer import`).
+#
+# What goes where:
+# - company / website / founders / sources become discoveries with scout "reviewer" and this file's `origin`, so
+#   the pipeline resolves, enriches and verifies them like any other candidate. Every fact on a card still comes
+#   from a fetched source with a quote; nothing in this file is stored as a fact.
+# - category + note become the "Reviewer label" / "Reviewer note" (feedback table): shown on cards and in the
+#   Sheet as the reviewer's view, never as verified evidence. A note typed in the Sheet wins over this file.
+# - Add the company names to the AI Policy's "Must consider" list to guarantee a shortlist slot (still only when
+#   every gate and verification check passes).
+#
+# website: only a domain checked to be the company's own (title names it); leave null to let resolve find it.
+# sources: real articles about the company, used as discovery sources (checked 2026-10-26).
+origin: Analyst shortlist (Oct 2026)
+picks:
+  - company: SpeakX
+    website: https://speakx.ai
+    founders: [Arpit Mittal]
+    category: acquire
+    sources:
+      - https://india.entrepreneur.com/news-and-trends/speakxai-raises-usd-16-mn-to-strengthen-ai-powered-english/498354
+      - https://entrackr.com/news/edtech-startup-speakx-raises-16-mn-led-by-westbridge-10559891
+    note: >-
+      Spoken English is the hidden prerequisite behind most of upGrad's working-professional and Internshala users,
+      and SpeakX is adding regional-language support. Flag: Ronnie Screwvala's angel stake gives a warm path in, but
+      it is a related-party situation that needs formal conflict handling.
+
+  - company: Disprz
+    website: https://disprz.com
+    founders: [Subbu Viswanathan, Kuljit Chadha]
+    category: acquire
+    sources:
+      - https://www.peoplematters.in/news/funding-investment/disprz-raises-30-million-in-series-c-funding-38639
+      - https://www.businesswire.com/news/home/20230806097919/en/Disprz-Raises-$30M-in-Series-C-Funding-to-Expand-Presence-in-the-Middle-East-Markets
+    note: >-
+      Would give upGrad Enterprise its own learning-platform layer, so upGrad sells software plus content rather
+      than content alone. Caveat: the last round is from 2023, so current revenue and appetite need checking. The
+      largest ticket on the list.
+
+  - company: iMocha
+    website: https://imocha.io
+    founders: [Amit Mishra, Sujit Karpe]
+    category: acquire
+    sources:
+      - https://www.peoplematters.in/news/hr-technology/digital-skills-assessment-startup-imocha-raises-14-million-in-series-a-funding-32426
+    note: >-
+      One assessment layer could serve Enterprise skills audits, programme admissions and Internshala's employer
+      matching. Caveat: the last disclosed round was 2022, so current financials need verification.
+
+  - company: GyanDhan
+    website: https://gyandhan.com
+    founders: [Ankit Mehra, Jainesh Sinha]
+    category: partner
+    sources:
+      - https://entrackr.com/snippets/gyandhan-raises-rs-50-cr-in-series-a-round-from-classplus-and-pravega-9333649
+      - https://startuptalky.com/news/gyandhan-secures-inr-50-crore-series-a-funding/
+    note: >-
+      Natural financing infrastructure for upGrad Abroad; as a lender it is better integrated than owned.
+
+  - company: Propelld
+    website: https://propelld.com
+    founders: [Bibhu Prasad Das, Victor Senapaty, Brijesh Samantaray]
+    category: partner
+    sources:
+      - https://www.business-standard.com/amp/article/companies/fintech-platform-propelld-raises-35-mn-to-boost-education-finance-biz-122021800376_1.html
+      - https://entrackr.com/2024/05/propelld-raises-25-mn-debt-for-nbfc-arm-edgro
+    note: >-
+      Fee financing for working-professional programmes and online degrees, a direct conversion lever. Check first
+      whether upGrad already uses it.
+
+  - company: Seekho
+    website: https://seekho.in
+    founders: [Rohit Choudhary, Keertay Agarwal, Yash Banwani]
+    category: partner
+    sources:
+      - https://entrackr.com/news/seekho-raises-28-mn-in-series-b-round-led-by-bessemer-9780217
+      - https://www.bvp.com/news/powering-indias-digital-learning-revolution-with-seekho
+    note: >-
+      A top-of-funnel route into Bharat learners for upGrad's programmes. Likely too richly valued to buy now.
+      Paid-subscriber figures seen in secondary-market data are unverified.
+
+  - company: Emversity
+    website: https://emversity.com
+    founders: [Vivek Sinha]
+    category: partner
+    sources:
+      - https://india.entrepreneur.com/news-and-trends/emversity-raises-usd-30-mn-in-series-a-funding-led-by/501905
+      - https://www.techcrunch.com/2026/01/14/indias-emversity-doubles-valuation-as-it-scales-workers-ai-cant-replace/
+    note: >-
+      Its employer-designed modules could plug into upGrad's university-partner degrees. The founder's Unacademy
+      background is a natural bridge, and this could become an acquisition later.
+
+  - company: SigIQ.ai
+    website: https://sigiq.ai
+    founders: [Karttikeya Mangalam]
+    category: co_build
+    sources:
+      - https://india.entrepreneur.com/news-and-trends/sigiqai-raises-usd-95-mn-funding-co-led-by-the-house-fund/489673
+      - https://yourstory.com/2025/04/edtech-sigiqai-9-million-seed-funding-gsv-ventures-peak-xv-ai
+    note: >-
+      Co-build idea: an AI tutor for upGrad's professional certification programmes and Unacademy's UPSC base.
+      upGrad's OpenAI partnership makes this an easy story to tell.
+
+  - company: Mesa School of Business
+    website: https://mesaschool.co
+    founders: [Varun Limaye, Ankit Agarwal]
+    category: co_build
+    sources:
+      - https://yourstory.com/2026/10/mesa-school-of-business-raises-rs-110-crore-co-led-dharana-capital-elevation-capital
+      - https://www.entrepreneurindia.com/blog/en/news/mesa-school-of-business-raises-inr-110-crore-in-equity-and-debt-funding.61296
+    note: >-
+      Co-build idea: jointly design "build-a-business" programmes delivered through upGrad's university partners,
+      combining Mesa's pedagogy with upGrad's reach.
+
+  - company: ProLearn
+    website: null
+    founders: [Ravneet Singh]
+    category: co_build
+    sources:
+      - https://india.entrepreneur.com/business-news/prolearn-raises-inr-30-cr-pre-seed-round-led-by-beenext
+      - https://inc42.com/buzz/edtech-startup-prolearn-bags-%E2%82%B930-cr-to-tailor-ai-learning-for-students/
+    note: >-
+      The clearest "back the founder early" case: build the AI companion on top of Unacademy's learner base.
+      Still pre-product.
+
+  - company: Arivihan
+    website: https://arivihan.com
+    founders: [Ritesh Singh Chandel, Sonu Kumar, Rushabh Kothari]
+    category: co_build
+    sources:
+      - https://timesofindia.indiatimes.com/business/india-business/ai-edtech-startup-arivihan-raises-10-mn-from-accel-prosus/articleshow/134592347.cms
+    note: >-
+      Co-build idea: a vernacular AI layer for Unacademy's JEE/NEET business, where Arivihan already competes.

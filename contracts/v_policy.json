@@ -1,0 +1,62 @@
+{
+  "additionalProperties": false,
+  "description": "Row of v_policy. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "version": {
+      "title": "Version",
+      "type": "integer"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "draft",
+        "archived"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "author": {
+      "title": "Author",
+      "type": "string"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    },
+    "policy": {
+      "additionalProperties": true,
+      "title": "Policy",
+      "type": "object"
+    },
+    "changes": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Changes",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "runs_scored": {
+      "default": 0,
+      "title": "Runs Scored",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "version",
+    "status",
+    "author",
+    "note",
+    "policy",
+    "changes",
+    "created_at"
+  ],
+  "title": "PolicyRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

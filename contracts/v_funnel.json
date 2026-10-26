@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "description": "Row of v_funnel. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "run_id": {
+      "format": "uuid",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "is_latest": {
+      "title": "Is Latest",
+      "type": "boolean"
+    },
+    "stage": {
+      "enum": [
+        "discovered",
+        "resolved",
+        "enriched",
+        "verified",
+        "gated",
+        "scored",
+        "shortlisted"
+      ],
+      "title": "Stage",
+      "type": "string"
+    },
+    "stage_order": {
+      "maximum": 7,
+      "minimum": 1,
+      "title": "Stage Order",
+      "type": "integer"
+    },
+    "count": {
+      "minimum": 0,
+      "title": "Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "run_id",
+    "is_latest",
+    "stage",
+    "stage_order",
+    "count"
+  ],
+  "title": "FunnelRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

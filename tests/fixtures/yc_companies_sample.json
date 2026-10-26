@@ -1,0 +1,539 @@
+[
+ {
+  "name": "Mimir",
+  "slug": "mimir",
+  "website": "https://mimirhq.com",
+  "one_liner": "A platform for STEM courses featuring automated grading, plagiarism…",
+  "industry": "Education",
+  "subindustry": "Education",
+  "industries": [
+   "Education"
+  ],
+  "tags": [
+   "Education"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada"
+  ],
+  "all_locations": "Indianapolis, IN, USA",
+  "batch": "Summer 2015",
+  "status": "Acquired",
+  "team_size": 8,
+  "launched_at": 1430241616,
+  "url": "https://www.ycombinator.com/companies/mimir"
+ },
+ {
+  "name": "Dost Education",
+  "slug": "dost-education",
+  "website": "http://www.dosteducation.com/",
+  "one_liner": "Getting kids ready for school in India.",
+  "industry": "Education",
+  "subindustry": "Education",
+  "industries": [
+   "Education"
+  ],
+  "tags": [
+   "Education",
+   "Nonprofit",
+   "India",
+   "Data Science"
+  ],
+  "regions": [
+   "India",
+   "South Asia",
+   "Remote",
+   "Fully Remote"
+  ],
+  "all_locations": "Delhi, DL, India; Remote",
+  "batch": "Winter 2017",
+  "status": "Active",
+  "team_size": 30,
+  "launched_at": 1481769031,
+  "url": "https://www.ycombinator.com/companies/dost-education"
+ },
+ {
+  "name": "Skill-lync",
+  "slug": "skill-lync",
+  "website": "http://skill-lync.com",
+  "one_liner": "Online engineering college for India. Learn technical skills & get…",
+  "industry": "Education",
+  "subindustry": "Education",
+  "industries": [
+   "Education"
+  ],
+  "tags": [
+   "Education",
+   "Income Share Agreements",
+   "eLearning"
+  ],
+  "regions": [
+   "India",
+   "South Asia"
+  ],
+  "all_locations": "Chennai, TN, India",
+  "batch": "Winter 2019",
+  "status": "Active",
+  "team_size": 3000,
+  "launched_at": 1543948397,
+  "url": "https://www.ycombinator.com/companies/skill-lync"
+ },
+ {
+  "name": "Toko",
+  "slug": "toko",
+  "website": "https://tokotutor.com/",
+  "one_liner": "AI English Tutor",
+  "industry": "Education",
+  "subindustry": "Education",
+  "industries": [
+   "Education"
+  ],
+  "tags": [
+   "AI-Enhanced Learning",
+   "Education",
+   "Generative AI",
+   "Machine Learning",
+   "Consumer"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada",
+   "Remote",
+   "Partly Remote"
+  ],
+  "all_locations": "New York City, NY, USA",
+  "batch": "Winter 2022",
+  "status": "Active",
+  "team_size": 3,
+  "launched_at": 1646685328,
+  "url": "https://www.ycombinator.com/companies/toko"
+ },
+ {
+  "name": "Panorama Education",
+  "slug": "panorama-education",
+  "website": "https://www.panoramaed.com/",
+  "one_liner": "Improving education for every student.",
+  "industry": "Education",
+  "subindustry": "Education",
+  "industries": [
+   "Education"
+  ],
+  "tags": [
+   "Education",
+   "SaaS",
+   "B2B"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada",
+   "Remote",
+   "Partly Remote"
+  ],
+  "all_locations": "Los Angeles, CA, USA",
+  "batch": "Summer 2013",
+  "status": "Active",
+  "team_size": 350,
+  "launched_at": 1367523611,
+  "url": "https://www.ycombinator.com/companies/panorama-education"
+ },
+ {
+  "name": "Quad",
+  "slug": "quad",
+  "website": "http://thequad.com",
+  "one_liner": "Quad is where college students get things done.",
+  "industry": "Education",
+  "subindustry": "Education",
+  "industries": [
+   "Education"
+  ],
+  "tags": [
+   "Education"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada"
+  ],
+  "all_locations": "New York City, NY, USA; San Francisco, CA, USA",
+  "batch": "Summer 2011",
+  "status": "Inactive",
+  "team_size": 12,
+  "launched_at": 1326789223,
+  "url": "https://www.ycombinator.com/companies/quad"
+ },
+ {
+  "name": "General Learning",
+  "slug": "general-learning",
+  "website": "https://generallearning.com",
+  "one_liner": "AI tutors for students.",
+  "industry": "Education",
+  "subindustry": "Education",
+  "industries": [
+   "Education"
+  ],
+  "tags": [],
+  "regions": [
+   "Hong Kong",
+   "East Asia"
+  ],
+  "all_locations": "Hong Kong, Hong Kong",
+  "batch": "Fall 2024",
+  "status": "Active",
+  "team_size": 35,
+  "launched_at": 1731559627,
+  "url": "https://www.ycombinator.com/companies/general-learning"
+ },
+ {
+  "name": "Fynn",
+  "slug": "fynn",
+  "website": "https://www.fynncredit.com",
+  "one_liner": "SoFi for trade students",
+  "industry": "Fintech",
+  "subindustry": "Fintech -> Credit and Lending",
+  "industries": [
+   "Fintech",
+   "Credit and Lending"
+  ],
+  "tags": [
+   "Education",
+   "Fintech"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada",
+   "Remote",
+   "Partly Remote"
+  ],
+  "all_locations": "New York City, NY, USA; Dallas, TX, USA; New York, NY, USA; Minneapolis, MN, USA",
+  "batch": "Summer 2019",
+  "status": "Active",
+  "team_size": 26,
+  "launched_at": 1556684344,
+  "url": "https://www.ycombinator.com/companies/fynn"
+ },
+ {
+  "name": "Coursedog",
+  "slug": "coursedog",
+  "website": "http://coursedog.com",
+  "one_liner": "Higher Ed's Best Friend - integrated academic operations software.",
+  "industry": "B2B",
+  "subindustry": "B2B -> Operations",
+  "industries": [
+   "B2B",
+   "Operations"
+  ],
+  "tags": [
+   "Education",
+   "SaaS"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada",
+   "Remote",
+   "Fully Remote"
+  ],
+  "all_locations": "New York City, NY, USA; New York, NY, USA; Remote",
+  "batch": "Winter 2019",
+  "status": "Acquired",
+  "team_size": 100,
+  "launched_at": 1541192584,
+  "url": "https://www.ycombinator.com/companies/coursedog"
+ },
+ {
+  "name": "CSPA",
+  "slug": "cspa",
+  "website": "https://cspa.io",
+  "one_liner": "The Computer Science Proficiency Assessment (CSPA™) is a…",
+  "industry": "B2B",
+  "subindustry": "B2B -> Recruiting and Talent",
+  "industries": [
+   "B2B",
+   "Recruiting and Talent"
+  ],
+  "tags": [
+   "Education",
+   "Recruiting"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada"
+  ],
+  "all_locations": "San Francisco, CA, USA",
+  "batch": "Summer 2018",
+  "status": "Acquired",
+  "team_size": 6,
+  "launched_at": 1525230398,
+  "url": "https://www.ycombinator.com/companies/cspa"
+ },
+ {
+  "name": "Deepgram",
+  "slug": "deepgram",
+  "website": "https://www.deepgram.com",
+  "one_liner": "Building foundational AI for speech transcription and understanding.",
+  "industry": "B2B",
+  "subindustry": "B2B -> Engineering, Product and Design",
+  "industries": [
+   "B2B",
+   "Engineering, Product and Design"
+  ],
+  "tags": [
+   "AI-Enhanced Learning",
+   "API",
+   "AI"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada",
+   "Remote",
+   "Fully Remote"
+  ],
+  "all_locations": "San Francisco, CA, USA; Remote",
+  "batch": "Winter 2016",
+  "status": "Active",
+  "team_size": 115,
+  "launched_at": 1447199415,
+  "url": "https://www.ycombinator.com/companies/deepgram"
+ },
+ {
+  "name": "Phiar",
+  "slug": "phiar",
+  "website": "https://www.phiar.net",
+  "one_liner": "We are developing a revolutionary AI-powered augmented reality…",
+  "industry": "Industrials",
+  "subindustry": "Industrials -> Automotive",
+  "industries": [
+   "Industrials",
+   "Automotive"
+  ],
+  "tags": [
+   "Machine Learning",
+   "Augmented Reality",
+   "AI"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada",
+   "Remote",
+   "Partly Remote"
+  ],
+  "all_locations": "San Francisco, CA, USA; Redwood City, CA, USA",
+  "batch": "Summer 2018",
+  "status": "Acquired",
+  "team_size": 12,
+  "launched_at": 1524539151,
+  "url": "https://www.ycombinator.com/companies/phiar"
+ },
+ {
+  "name": "Mentlio",
+  "slug": "mentlio",
+  "website": "https://mentlio.com",
+  "one_liner": "Engineering Intelligence and Token Optimization for the AI-Coding Era",
+  "industry": "B2B",
+  "subindustry": "B2B",
+  "industries": [
+   "B2B"
+  ],
+  "tags": [
+   "Developer Tools",
+   "Machine Learning",
+   "Productivity"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada"
+  ],
+  "all_locations": "San Francisco, CA, USA",
+  "batch": "Summer 2026",
+  "status": "Active",
+  "team_size": 0,
+  "launched_at": 1786589390,
+  "url": "https://www.ycombinator.com/companies/mentlio"
+ },
+ {
+  "name": "Sepsis Scout",
+  "slug": "sepsis-scout",
+  "website": "https://sepsisscout.com",
+  "one_liner": "Wearables and AI to predict and prevent sepsis outside the hospital",
+  "industry": "Healthcare",
+  "subindustry": "Healthcare -> Healthcare IT",
+  "industries": [
+   "Healthcare",
+   "Healthcare IT"
+  ],
+  "tags": [
+   "Deep Learning",
+   "Health Tech",
+   "Medical Devices"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada"
+  ],
+  "all_locations": "San Francisco, CA, USA",
+  "batch": "Winter 2018",
+  "status": "Acquired",
+  "team_size": 5,
+  "launched_at": 1509599012,
+  "url": "https://www.ycombinator.com/companies/sepsis-scout"
+ },
+ {
+  "name": "Petrarch",
+  "slug": "petrarch",
+  "website": "https://petrarch.co/",
+  "one_liner": "Advancing model capabilities for critical infrastructure",
+  "industry": "B2B",
+  "subindustry": "B2B",
+  "industries": [
+   "B2B"
+  ],
+  "tags": [
+   "Reinforcement Learning",
+   "B2B",
+   "Privacy",
+   "Data Engineering",
+   "AI"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada"
+  ],
+  "all_locations": "San Francisco, CA, USA",
+  "batch": "Summer 2026",
+  "status": "Active",
+  "team_size": 3,
+  "launched_at": 1782965522,
+  "url": "https://www.ycombinator.com/companies/petrarch"
+ },
+ {
+  "name": "autone",
+  "slug": "autone",
+  "website": "https://autone.io",
+  "one_liner": "Inventory management SaaS for Retail & Consumer brands",
+  "industry": "B2B",
+  "subindustry": "B2B -> Retail",
+  "industries": [
+   "B2B",
+   "Retail"
+  ],
+  "tags": [
+   "Sustainable Fashion",
+   "Consumer",
+   "Supply Chain",
+   "Retail"
+  ],
+  "regions": [
+   "United Kingdom",
+   "Europe",
+   "Remote",
+   "Partly Remote"
+  ],
+  "all_locations": "London, England, United Kingdom",
+  "batch": "Summer 2022",
+  "status": "Active",
+  "team_size": 70,
+  "launched_at": 1657122917,
+  "url": "https://www.ycombinator.com/companies/autone"
+ },
+ {
+  "name": "Frogmetrics",
+  "slug": "frogmetrics",
+  "website": "http://frogmetrics.com",
+  "one_liner": "",
+  "industry": "B2B",
+  "subindustry": "B2B -> Retail",
+  "industries": [
+   "B2B",
+   "Retail"
+  ],
+  "tags": [],
+  "regions": [
+   "United States of America",
+   "America / Canada"
+  ],
+  "all_locations": "New York City, NY, USA; Brooklyn, NY, USA",
+  "batch": "Summer 2008",
+  "status": "Inactive",
+  "team_size": 2,
+  "launched_at": 1326790983,
+  "url": "https://www.ycombinator.com/companies/frogmetrics"
+ },
+ {
+  "name": "Volantio",
+  "slug": "volantio",
+  "website": "http://www.volantio.com",
+  "one_liner": "Post-booking revenue and capacity optimization for airlines…",
+  "industry": "B2B",
+  "subindustry": "B2B -> Marketing",
+  "industries": [
+   "B2B",
+   "Marketing"
+  ],
+  "tags": [
+   "Airlines"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada"
+  ],
+  "all_locations": "Atlanta, GA, USA",
+  "batch": "Winter 2009",
+  "status": "Active",
+  "team_size": 19,
+  "launched_at": 1326790848,
+  "url": "https://www.ycombinator.com/companies/volantio"
+ },
+ {
+  "name": "L.",
+  "slug": "l",
+  "website": "http://thisisL.com",
+  "one_liner": "L. makes award-winning personal care products with organic materials.",
+  "industry": "Consumer",
+  "subindustry": "Consumer -> Home and Personal",
+  "industries": [
+   "Consumer",
+   "Home and Personal"
+  ],
+  "tags": [
+   "Beauty",
+   "Health & Wellness"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada"
+  ],
+  "all_locations": "San Francisco, CA, USA",
+  "batch": "Summer 2015",
+  "status": "Acquired",
+  "team_size": null,
+  "launched_at": 1429997717,
+  "url": "https://www.ycombinator.com/companies/l"
+ },
+ {
+  "name": "Green Canopy NODE",
+  "slug": "green-canopy-node",
+  "website": "http://greencanopynode.com",
+  "one_liner": "Green Canopy NODE builds sustainable homes fast.",
+  "industry": "Real Estate and Construction",
+  "subindustry": "Real Estate and Construction -> Housing and Real Estate",
+  "industries": [
+   "Real Estate and Construction",
+   "Housing and Real Estate"
+  ],
+  "tags": [
+   "Hardware",
+   "Housing",
+   "Proptech"
+  ],
+  "regions": [
+   "United States of America",
+   "America / Canada",
+   "Remote",
+   "Partly Remote"
+  ],
+  "all_locations": "Seattle, WA, USA",
+  "batch": "Summer 2019",
+  "status": "Active",
+  "team_size": 31,
+  "launched_at": 1556761303,
+  "url": "https://www.ycombinator.com/companies/green-canopy-node"
+ }
+]

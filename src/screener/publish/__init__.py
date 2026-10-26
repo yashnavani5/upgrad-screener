@@ -1,0 +1,1 @@
+"""Publish stage: Google Sheet."""

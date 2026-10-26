@@ -1,0 +1,24 @@
+# SearXNG for the pipeline's search router. Local only (bound to 127.0.0.1).
+#   docker compose -f docker/searxng/docker-compose.yml up -d
+# Host port 18080 by default (SEARXNG_HOST_PORT): Windows/Hyper-V may reserve 8027-8126 after a restart.
+# Also included by the root docker-compose.yml, so `docker compose up -d` starts it with Postgres.
+# SEARXNG_SECRET comes from docker/searxng/.env (template: docker/searxng/.env.example).
+
+name: upgrad-screener
+
+services:
+  searxng:
+    image: searxng/searxng:2026.10.17-1c10abe2d
+    restart: unless-stopped
+    environment:
+      SEARXNG_BASE_URL: http://localhost:${SEARXNG_HOST_PORT:-18080}/
+      SEARXNG_SECRET: ${SEARXNG_SECRET:?set SEARXNG_SECRET in docker/searxng/.env}
+    ports:
+      - "127.0.0.1:${SEARXNG_HOST_PORT:-18080}:8080"
+    volumes:
+      - ./settings.yml:/etc/searxng/settings.yml:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8080/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

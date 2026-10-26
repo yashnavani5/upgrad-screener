@@ -1,0 +1,190 @@
+{
+  "$defs": {
+    "FounderRef": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "linkedin_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Linkedin Url"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FounderRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Row of v_left_out. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "run_id": {
+      "format": "uuid",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "is_latest": {
+      "title": "Is Latest",
+      "type": "boolean"
+    },
+    "entity_id": {
+      "format": "uuid",
+      "title": "Entity Id",
+      "type": "string"
+    },
+    "company": {
+      "title": "Company",
+      "type": "string"
+    },
+    "founders": {
+      "items": {
+        "$ref": "#/$defs/FounderRef"
+      },
+      "title": "Founders",
+      "type": "array"
+    },
+    "reason_code": {
+      "enum": [
+        "TOO_LARGE",
+        "COMPETITOR",
+        "UPGRAD_OWNED",
+        "UNVERIFIABLE",
+        "INACTIVE",
+        "LOW_FIT",
+        "NOT_EDUCATION",
+        "DUPLICATE_THESIS",
+        "ACQUIRED",
+        "POLICY_FILTER"
+      ],
+      "title": "Reason Code",
+      "type": "string"
+    },
+    "explanation": {
+      "title": "Explanation",
+      "type": "string"
+    },
+    "would_have_ranked": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Would Have Ranked"
+    },
+    "source_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Url"
+    },
+    "region": {
+      "default": "unknown",
+      "enum": [
+        "india",
+        "outside",
+        "unknown"
+      ],
+      "title": "Region",
+      "type": "string"
+    },
+    "featured": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Featured"
+    },
+    "featured_category": {
+      "anyOf": [
+        {
+          "enum": [
+            "big",
+            "evidence",
+            "close"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Featured Category"
+    },
+    "featured_line": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Featured Line"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    }
+  },
+  "required": [
+    "run_id",
+    "is_latest",
+    "entity_id",
+    "company",
+    "founders",
+    "reason_code",
+    "explanation"
+  ],
+  "title": "LeftOutRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

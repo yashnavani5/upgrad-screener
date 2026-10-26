@@ -1,0 +1,132 @@
+# upGrad Founder Screener: full pipeline run (discover -> resolve -> enrich -> verify -> score -> explain -> publish).
+# Triggered from the dashboard's "Run now" (workflow_dispatch) and daily on a schedule.
+# Phase 2: DATABASE_URL must point at a Postgres reachable from GitHub (see docs/ARCHITECTURE.md section 10.6).
+name: screener
+
+on:
+  workflow_dispatch:
+    inputs:
+      top_n:
+        description: "Companies to enrich + verify (by preliminary priority)"
+        required: false
+        default: "150"
+        type: string
+      mode:
+        description: "incremental (only new/stale entities) or full"
+        required: false
+        default: "incremental"
+        type: choice
+        options: [incremental, full]
+  schedule:
+    - cron: "30 1 * * *"   # daily 01:30 UTC (07:00 IST)
+
+# Never two runs at once; a queued run waits instead of cancelling the active one.
+concurrency:
+  group: screener
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    env:
+      TOP_N: ${{ inputs.top_n || '150' }}
+      MODE: ${{ inputs.mode || 'incremental' }}
+      TRIGGER: ${{ github.event_name == 'schedule' && 'schedule' || 'dashboard' }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GEMINI_MODEL_FAST: ${{ vars.GEMINI_MODEL_FAST }}
+      GEMINI_MODEL_SMART: ${{ vars.GEMINI_MODEL_SMART }}
+      GEMINI_EMBED_MODEL: ${{ vars.GEMINI_EMBED_MODEL }}
+      SEARXNG_URL: http://localhost:8080
+      EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+      TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+      SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+      JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PRODUCTHUNT_TOKEN: ${{ secrets.PRODUCTHUNT_TOKEN }}
+      PDL_API_KEY: ${{ secrets.PDL_API_KEY }}
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}   # inline JSON is accepted
+      GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+      DATA_GOV_IN_API_KEY: ${{ secrets.DATA_GOV_IN_API_KEY }}
+      USER_AGENT_CONTACT: ${{ vars.USER_AGENT_CONTACT }}
+      RUN_MAX_LLM_CALLS: ${{ vars.RUN_MAX_LLM_CALLS || '5000' }}
+      LOG_LEVEL: INFO
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.13.5"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen --no-dev
+
+      - name: Restore pipeline cache (fetch / search / LLM / embeddings)
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache
+          key: screener-cache-${{ github.run_id }}
+          restore-keys: |
+            screener-cache-
+
+      - name: Install Playwright Chromium
+        run: uv run playwright install --with-deps chromium
+
+      # Service containers start before checkout and cannot mount repo files, so SearXNG is started here.
+      - name: Start SearXNG
+        env:
+          SEARXNG_SECRET: ${{ secrets.SEARXNG_SECRET }}
+        run: |
+          docker run -d --name searxng -p 8080:8080 \
+            -e SEARXNG_SECRET="$SEARXNG_SECRET" \
+            -e SEARXNG_BASE_URL=http://localhost:8080/ \
+            -v "$GITHUB_WORKSPACE/docker/searxng/settings.yml:/etc/searxng/settings.yml:ro" \
+            searxng/searxng:2026.10.17-1c10abe2d
+
+      - name: Wait for SearXNG
+        run: |
+          for _ in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/healthz > /dev/null; then echo "SearXNG is up"; exit 0; fi
+            sleep 2
+          done
+          echo "SearXNG did not become healthy" >&2
+          docker logs searxng >&2
+          exit 1
+
+      - name: Apply database migrations
+        run: uv run screener db upgrade
+
+      - name: Run the pipeline
+        run: |
+          if [ "$MODE" = "full" ]; then MODE_FLAG="--full"; else MODE_FLAG="--incremental"; fi
+          uv run screener run --top "$TOP_N" --trigger "$TRIGGER" "$MODE_FLAG"
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screener-logs-${{ github.run_id }}
+          path: |
+            .cache/logs/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: SearXNG logs
+        if: failure()
+        run: docker logs searxng | tail -n 200
+
+      - name: Save pipeline cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache
+          key: screener-cache-${{ github.run_id }}

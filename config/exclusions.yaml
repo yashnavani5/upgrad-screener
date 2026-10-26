@@ -1,0 +1,25 @@
+# Hard exclusions applied at the gate stage (docs/SPEC.md section 3.7).
+
+# Competitors at scale -> reason code COMPETITOR. Starting list; extend as needed.
+competitors_at_scale:
+  - Byju's
+  - Unacademy
+  - PhysicsWallah
+  - Eruditus
+  - Simplilearn
+  - Coursera
+  - Vedantu
+  - Scaler
+
+# Companies owned by or part of upGrad -> reason code UPGRAD_OWNED.
+# TODO: populate via a verification task (each entry needs a source URL); do not fill from memory.
+upgrad_owned: []
+
+# upGrad itself (and names starting with it, e.g. 'upGrad Abroad') -> UPGRAD_OWNED. Not a guess: it is the client.
+self_names:
+  - upGrad
+
+# "Not already a giant" -> reason code TOO_LARGE when either limit is exceeded.
+size_ceiling:
+  max_total_raised_usd: 100000000
+  max_headcount: 1000

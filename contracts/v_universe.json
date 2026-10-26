@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "description": "Row of v_universe. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "area": {
+      "title": "Area",
+      "type": "string"
+    },
+    "bucket": {
+      "title": "Bucket",
+      "type": "string"
+    },
+    "count": {
+      "minimum": 0,
+      "title": "Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "area",
+    "bucket",
+    "count"
+  ],
+  "title": "UniverseRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

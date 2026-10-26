@@ -1,0 +1,531 @@
+{
+  "$defs": {
+    "ClaimRef": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "evidence_span": {
+          "title": "Evidence Span",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "verifier_confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verifier Confidence"
+        }
+      },
+      "required": [
+        "field",
+        "value",
+        "source_url",
+        "evidence_span",
+        "retrieved_at"
+      ],
+      "title": "ClaimRef",
+      "type": "object"
+    },
+    "FounderDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "founder_id": {
+          "format": "uuid",
+          "title": "Founder Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "linkedin_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Linkedin Url"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        },
+        "is_current": {
+          "title": "Is Current",
+          "type": "boolean"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "identity_verified": {
+          "default": false,
+          "title": "Identity Verified",
+          "type": "boolean"
+        },
+        "x_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "X Url"
+        },
+        "background": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/FounderFact"
+          },
+          "title": "Background",
+          "type": "array"
+        },
+        "line": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line"
+        }
+      },
+      "required": [
+        "founder_id",
+        "name",
+        "is_current"
+      ],
+      "title": "FounderDetail",
+      "type": "object"
+    },
+    "FounderFact": {
+      "additionalProperties": false,
+      "description": "A supported founder claim shown as background: prior_role, prior_exit or education.",
+      "properties": {
+        "field": {
+          "enum": [
+            "prior_role",
+            "prior_exit",
+            "education"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "additionalProperties": true,
+          "title": "Value",
+          "type": "object"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "value",
+        "source_url"
+      ],
+      "title": "FounderFact",
+      "type": "object"
+    },
+    "RoundRef": {
+      "additionalProperties": false,
+      "properties": {
+        "round_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Round Type"
+        },
+        "amount_usd": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount Usd"
+        },
+        "announced_on": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Announced On"
+        },
+        "investors": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Investors",
+          "type": "array"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_url"
+      ],
+      "title": "RoundRef",
+      "type": "object"
+    },
+    "ScoreComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "T",
+            "M",
+            "N",
+            "I",
+            "F_acquire",
+            "F_partner",
+            "F_co_build",
+            "F",
+            "C",
+            "final",
+            "bt_pct",
+            "final_prime"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "raw": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw"
+        },
+        "adjusted": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adjusted"
+        },
+        "n_signals": {
+          "minimum": 0,
+          "title": "N Signals",
+          "type": "integer"
+        },
+        "pool_mean": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pool Mean"
+        },
+        "weight": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weight"
+        },
+        "why_not_higher": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Why Not Higher"
+        }
+      },
+      "required": [
+        "name",
+        "n_signals"
+      ],
+      "title": "ScoreComponent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Row of v_company_detail. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "run_id": {
+      "format": "uuid",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "is_latest": {
+      "title": "Is Latest",
+      "type": "boolean"
+    },
+    "entity_id": {
+      "format": "uuid",
+      "title": "Entity Id",
+      "type": "string"
+    },
+    "company": {
+      "title": "Company",
+      "type": "string"
+    },
+    "website": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Website"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "country": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Country"
+    },
+    "city": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "City"
+    },
+    "founded_year": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Founded Year"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "inactive",
+        "unknown"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "total_raised_usd": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Total Raised Usd"
+    },
+    "headcount": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Headcount"
+    },
+    "fit_type": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_]{1,19}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fit Type"
+    },
+    "rank": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rank"
+    },
+    "founders": {
+      "items": {
+        "$ref": "#/$defs/FounderDetail"
+      },
+      "title": "Founders",
+      "type": "array"
+    },
+    "rounds": {
+      "items": {
+        "$ref": "#/$defs/RoundRef"
+      },
+      "title": "Rounds",
+      "type": "array"
+    },
+    "score_breakdown": {
+      "items": {
+        "$ref": "#/$defs/ScoreComponent"
+      },
+      "title": "Score Breakdown",
+      "type": "array"
+    },
+    "claims": {
+      "items": {
+        "$ref": "#/$defs/ClaimRef"
+      },
+      "title": "Claims",
+      "type": "array"
+    },
+    "region": {
+      "default": "unknown",
+      "enum": [
+        "india",
+        "outside",
+        "unknown"
+      ],
+      "title": "Region",
+      "type": "string"
+    },
+    "region_basis": {
+      "default": "no location evidence",
+      "title": "Region Basis",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "is_latest",
+    "entity_id",
+    "company",
+    "status",
+    "founders",
+    "rounds",
+    "score_breakdown",
+    "claims"
+  ],
+  "title": "CompanyDetailRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

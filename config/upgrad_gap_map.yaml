@@ -1,0 +1,40 @@
+# Editable assumptions. Verify against upGrad's current portfolio before relying on them.
+# Used by the fit lenses (Acquire / Partner / Co-build) in docs/SPEC.md section 1.3 and 3.4.
+
+business_units:
+  - id: online_degrees
+    name: Online degrees with university partners
+  - id: professional_certifications
+    name: Working-professional certifications
+  - id: enterprise_ld
+    name: Enterprise L&D
+  - id: study_abroad
+    name: Study abroad
+  - id: test_prep
+    name: Test prep
+  - id: campus_offline
+    name: Campus / offline learning
+  - id: executive_education
+    name: Executive education
+  - id: hiring_recruitment
+    name: Hiring / recruitment services
+
+wanted_capabilities:
+  - id: ai_tutoring
+    name: AI tutoring & personalization
+  - id: assessment_proctoring
+    name: Assessment & proctoring
+  - id: credential_verification
+    name: Credential verification
+  - id: vernacular_bharat
+    name: Vernacular / Bharat upskilling
+  - id: ai_native_corporate_ld
+    name: AI-native corporate L&D
+  - id: study_abroad_finance_visa
+    name: Study-abroad finance & visa
+  - id: employability_placement
+    name: Employability & placement tech
+  - id: content_tooling
+    name: Content creation tooling
+  - id: university_saas
+    name: University SaaS (admissions, LMS)

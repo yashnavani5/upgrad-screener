@@ -1,0 +1,295 @@
+{
+  "$defs": {
+    "FounderRef": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "linkedin_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Linkedin Url"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FounderRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Row of v_long_list. Generated from src/screener/contracts.py; do not edit.",
+  "properties": {
+    "run_id": {
+      "format": "uuid",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "is_latest": {
+      "title": "Is Latest",
+      "type": "boolean"
+    },
+    "rank": {
+      "minimum": 1,
+      "title": "Rank",
+      "type": "integer"
+    },
+    "entity_id": {
+      "format": "uuid",
+      "title": "Entity Id",
+      "type": "string"
+    },
+    "company": {
+      "title": "Company",
+      "type": "string"
+    },
+    "website": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Website"
+    },
+    "founders": {
+      "items": {
+        "$ref": "#/$defs/FounderRef"
+      },
+      "title": "Founders",
+      "type": "array"
+    },
+    "fit_type": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_]{1,19}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fit Type"
+    },
+    "final": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Final",
+      "type": "number"
+    },
+    "t": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "T"
+    },
+    "m": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "M"
+    },
+    "n": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "N"
+    },
+    "i": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "I"
+    },
+    "f": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "F"
+    },
+    "f_acquire": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "F Acquire"
+    },
+    "f_partner": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "F Partner"
+    },
+    "f_co_build": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "F Co Build"
+    },
+    "confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "bt_pct": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Bt Pct"
+    },
+    "gate_status": {
+      "enum": [
+        "passed",
+        "failed"
+      ],
+      "title": "Gate Status",
+      "type": "string"
+    },
+    "reason_code": {
+      "anyOf": [
+        {
+          "enum": [
+            "TOO_LARGE",
+            "COMPETITOR",
+            "UPGRAD_OWNED",
+            "UNVERIFIABLE",
+            "INACTIVE",
+            "LOW_FIT",
+            "NOT_EDUCATION",
+            "DUPLICATE_THESIS",
+            "ACQUIRED",
+            "POLICY_FILTER"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reason Code"
+    },
+    "region": {
+      "default": "unknown",
+      "enum": [
+        "india",
+        "outside",
+        "unknown"
+      ],
+      "title": "Region",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "is_latest",
+    "rank",
+    "entity_id",
+    "company",
+    "founders",
+    "final",
+    "confidence",
+    "gate_status"
+  ],
+  "title": "LongListRow",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

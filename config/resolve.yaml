@@ -1,0 +1,105 @@
+# Entity resolution settings (`screener resolve`). Editable assumptions; code reads every value here.
+
+thresholds:
+  jw_merge: 0.92            # Jaro-Winkler >= this AND (founder overlap OR cosine) -> merge
+  jw_ambiguous: 0.85        # [jw_ambiguous, jw_merge) -> Gemini-fast tiebreak
+  cosine_merge: 0.85        # description embedding cosine that supports a name match
+  # Exact or near-exact names with no supporting evidence and no domain conflict also go to the tiebreak
+  # (the rules above leave this case undefined; defaulting to "different" would keep obvious duplicates apart).
+  tiebreak_unsupported_high_jw: true
+
+blocking:
+  name_prefix_chars: 4
+
+# Stripped from the END of a normalized name, repeatedly, never down to an empty name.
+trailing_suffixes:
+  - private limited
+  - pvt ltd
+  - pvt
+  - ltd
+  - limited
+  - inc
+  - incorporated
+  - llc
+  - llp
+  - corp
+  - corporation
+  - co
+  - gmbh
+  - technologies
+  - technology
+  - labs
+  - edtech
+  - learning
+  - academy
+
+# Shared platforms: a URL on these never identifies a company, so their domains are never used as merge keys.
+shared_domains:
+  - github.com
+  - gitlab.com
+  - linkedin.com
+  - lnkd.in
+  - ycombinator.com
+  - betalist.com
+  - producthunt.com
+  - medium.com
+  - substack.com
+  - notion.site
+  - google.com
+  - apple.com
+  - youtube.com
+  - youtu.be
+  - facebook.com
+  - instagram.com
+  - x.com
+  - twitter.com
+  - t.me
+  - wordpress.com
+  - wixsite.com
+  - carrd.co
+  - linktr.ee
+  - bit.ly
+  - typeform.com
+  - forms.gle
+
+# Search results on these are never accepted as a company's official website.
+non_company_domains:
+  - wikipedia.org
+  - crunchbase.com
+  - tracxn.com
+  - pitchbook.com
+  - cbinsights.com
+  - zoominfo.com
+  - glassdoor.com
+  - glassdoor.co.in
+  - ambitionbox.com
+  - indeed.com
+  - naukri.com
+  - wellfound.com
+  - angel.co
+  - f6s.com
+  - owler.com
+  - inc42.com
+  - yourstory.com
+  - entrackr.com
+  - economictimes.indiatimes.com
+  - indiatimes.com
+  - livemint.com
+  - techcrunch.com
+  - moneycontrol.com
+  - business-standard.com
+  - thehindu.com
+  - forbes.com
+  - forbesindia.com
+  - holoniq.com
+  - asugsvsummit.com
+  - owlvc.com
+  - reddit.com
+  - quora.com
+  - play.google.com
+
+website_lookup:
+  enabled: true
+  max_lookups: 400          # per run
+  concurrency: 6
+  results_considered: 5
